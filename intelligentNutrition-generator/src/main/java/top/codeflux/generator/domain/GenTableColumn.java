@@ -1,6 +1,6 @@
 package top.codeflux.generator.domain;
 
-import javax.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotBlank;
 import top.codeflux.common.core.domain.BaseEntity;
 import top.codeflux.common.utils.StringUtils;
 
