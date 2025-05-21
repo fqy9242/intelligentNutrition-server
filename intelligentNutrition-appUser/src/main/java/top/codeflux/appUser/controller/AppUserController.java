@@ -13,11 +13,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import top.codeflux.appUser.domain.vo.AppUserVo;
 import top.codeflux.common.annotation.Log;
 import top.codeflux.common.core.controller.BaseController;
 import top.codeflux.common.core.domain.AjaxResult;
 import top.codeflux.common.enums.BusinessType;
-import top.codeflux.appUser.domain.AppUser;
+import top.codeflux.common.domain.AppUser;
 import top.codeflux.appUser.service.IAppUserService;
 import top.codeflux.common.utils.poi.ExcelUtil;
 import top.codeflux.common.core.page.TableDataInfo;
@@ -43,7 +44,7 @@ public class AppUserController extends BaseController
     public TableDataInfo list(AppUser appUser)
     {
         startPage();
-        List<AppUser> list = appUserService.selectAppUserList(appUser);
+        List<AppUserVo> list = appUserService.selectAppUserList(appUser);
         return getDataTable(list);
     }
 
@@ -55,8 +56,8 @@ public class AppUserController extends BaseController
     @PostMapping("/export")
     public void export(HttpServletResponse response, AppUser appUser)
     {
-        List<AppUser> list = appUserService.selectAppUserList(appUser);
-        ExcelUtil<AppUser> util = new ExcelUtil<AppUser>(AppUser.class);
+        List<AppUserVo> list = appUserService.selectAppUserList(appUser);
+        ExcelUtil<AppUserVo> util = new ExcelUtil<AppUserVo>(AppUserVo.class);
         util.exportExcel(response, list, "app注册用户数据");
     }
 

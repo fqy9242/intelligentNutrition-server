@@ -19,7 +19,7 @@ public class Allergen extends BaseEntity
     private String id;
 
     /** 学号 */
-    private String studentId;
+    private String studentNumber;
 
     /** $column.columnComment */
     @Excel(name = "${comment}", readConverterExp = "$column.readConverterExp()")
@@ -34,14 +34,14 @@ public class Allergen extends BaseEntity
     {
         return id;
     }
-    public void setStudentId(String studentId) 
+    public void setStudentId(String studentNumber) 
     {
-        this.studentId = studentId;
+        this.studentNumber = studentNumber;
     }
 
     public String getStudentId() 
     {
-        return studentId;
+        return studentNumber;
     }
     public void setAllergen(String allergen) 
     {
@@ -57,7 +57,7 @@ public class Allergen extends BaseEntity
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
             .append("id", getId())
-            .append("studentId", getStudentId())
+            .append("studentNumber", getStudentId())
             .append("allergen", getAllergen())
             .append("createTime", getCreateTime())
             .toString();

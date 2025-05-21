@@ -4,6 +4,8 @@ import com.alibaba.fastjson2.annotation.JSONField;
 import top.codeflux.common.core.domain.entity.SysUser;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import top.codeflux.common.domain.AppUser;
+
 import java.util.Collection;
 import java.util.Set;
 
@@ -20,6 +22,7 @@ public class LoginUser implements UserDetails
      * 用户ID
      */
     private Long userId;
+    private AppUser appUser;
 
     /**
      * 部门ID
@@ -91,7 +94,15 @@ public class LoginUser implements UserDetails
 
     public Long getUserId()
     {
-        return userId;
+        return appUser == null ? userId : Long.valueOf(appUser.getId());
+    }
+
+    public void setAppUser(AppUser appUser) {
+        this.appUser = appUser;
+    }
+
+    public AppUser getAppUser() {
+        return appUser;
     }
 
     public void setUserId(Long userId)
@@ -129,7 +140,7 @@ public class LoginUser implements UserDetails
     @Override
     public String getUsername()
     {
-        return user.getUserName();
+        return this.appUser == null ?user.getUserName() : appUser.getStudentNumber();
     }
 
     /**

@@ -22,7 +22,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <resultMap type="Allergen" id="AllergenResult">
         <result property="id"    column="id"    />
-        <result property="studentId"    column="student_id"    />
+        <result property="studentNumber"    column="student_number"    />
         <result property="allergen"    column="allergen"    />
         <result property="createTime"    column="create_time"    />
     </resultMap>
@@ -49,9 +49,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
 
     <select id="selectAllergenList" resultMap="AllergenResult">
-        select id, student_id, allergen, create_time
+        select id, student_number, allergen, create_time
         from allergen
-        where student_id = #{student_id}
+        where student_number = #{student_number}
     </select>
 
     <insert id="insertAppUser" parameterType="AppUser" useGeneratedKeys="true" keyProperty="id">
@@ -105,20 +105,20 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </delete>
     
     <delete id="deleteAllergenByStudentIds" parameterType="String">
-        delete from allergen where student_id in 
-        <foreach item="studentId" collection="array" open="(" separator="," close=")">
-            #{studentId}
+        delete from allergen where student_number in 
+        <foreach item="studentNumber" collection="array" open="(" separator="," close=")">
+            #{studentNumber}
         </foreach>
     </delete>
 
     <delete id="deleteAllergenByStudentId" parameterType="String">
-        delete from allergen where student_id = #{studentId}
+        delete from allergen where student_number = #{studentNumber}
     </delete>
 
     <insert id="batchAllergen">
-        insert into allergen( id, student_id, allergen, create_time) values
+        insert into allergen( id, student_number, allergen, create_time) values
         <foreach item="item" index="index" collection="list" separator=",">
-            ( #{item.id}, #{item.studentId}, #{item.allergen}, #{item.createTime})
+            ( #{item.id}, #{item.studentNumber}, #{item.allergen}, #{item.createTime})
         </foreach>
     </insert>
 </mapper>

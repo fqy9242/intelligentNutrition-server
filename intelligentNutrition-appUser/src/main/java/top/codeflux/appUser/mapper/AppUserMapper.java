@@ -3,7 +3,9 @@ package top.codeflux.appUser.mapper;
 import java.util.List;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import top.codeflux.appUser.domain.AppUser;
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Select;
+import top.codeflux.common.domain.AppUser;
 import top.codeflux.appUser.domain.Allergen;
 
 /**
@@ -12,6 +14,7 @@ import top.codeflux.appUser.domain.Allergen;
  * @author qht
  * @date 2025-05-16
  */
+@Mapper
 public interface AppUserMapper extends BaseMapper<AppUser>
 {
     /**
@@ -77,7 +80,8 @@ public interface AppUserMapper extends BaseMapper<AppUser>
      * @return 结果
      */
     public int batchAllergen(List<Allergen> allergenList);
-    
+    @Select("select * from allergen where student_number = #{studentNumber}")
+    List<Allergen> selectAllergenByStudentNumber(String studentNumber);
 
     /**
      * 通过app注册用户主键删除过敏原信息

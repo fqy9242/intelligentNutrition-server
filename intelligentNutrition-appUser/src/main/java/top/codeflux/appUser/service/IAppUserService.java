@@ -3,9 +3,10 @@ package top.codeflux.appUser.service;
 import java.util.List;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import top.codeflux.appUser.domain.AppUser;
+import top.codeflux.common.domain.AppUser;
 import top.codeflux.appUser.domain.dto.AppUserLoginDto;
 import top.codeflux.appUser.domain.vo.AppUserLoginVo;
+import top.codeflux.appUser.domain.vo.AppUserVo;
 
 /**
  * app注册用户Service接口
@@ -28,7 +29,7 @@ public interface IAppUserService extends IService<AppUser> {
      * @param appUser app注册用户
      * @return app注册用户集合
      */
-    public List<AppUser> selectAppUserList(AppUser appUser);
+    public List<AppUserVo> selectAppUserList(AppUser appUser);
 
     /**
      * 新增app注册用户

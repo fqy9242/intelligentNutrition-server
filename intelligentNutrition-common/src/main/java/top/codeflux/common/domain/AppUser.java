@@ -1,6 +1,8 @@
-package top.codeflux.appUser.domain;
+package top.codeflux.common.domain;
 
 import java.util.List;
+
+import lombok.Data;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import top.codeflux.common.annotation.Excel;
@@ -12,6 +14,7 @@ import top.codeflux.common.core.domain.BaseEntity;
  * @author qht
  * @date 2025-05-16
  */
+@Data
 public class AppUser extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
@@ -36,94 +39,11 @@ public class AppUser extends BaseEntity
 
     /** 身高 */
     @Excel(name = "身高")
-    private Long height;
+    private Double height;
 
     /** 体重 */
     @Excel(name = "体重")
-    private Long weight;
-
-//    /** 过敏原信息 */
-//    private List<Allergen> allergenList;
-
-    public void setId(String id) 
-    {
-        this.id = id;
-    }
-
-    public String getId() 
-    {
-        return id;
-    }
-
-    public void setStudentNumber(String studentNumber) 
-    {
-        this.studentNumber = studentNumber;
-    }
-
-    public String getStudentNumber() 
-    {
-        return studentNumber;
-    }
-
-    public void setName(String name) 
-    {
-        this.name = name;
-    }
-
-    public String getName() 
-    {
-        return name;
-    }
-
-    public void setPassword(String password) 
-    {
-        this.password = password;
-    }
-
-    public String getPassword() 
-    {
-        return password;
-    }
-
-    public void setAvatar(String avatar) 
-    {
-        this.avatar = avatar;
-    }
-
-    public String getAvatar() 
-    {
-        return avatar;
-    }
-
-    public void setHeight(Long height) 
-    {
-        this.height = height;
-    }
-
-    public Long getHeight() 
-    {
-        return height;
-    }
-
-    public void setWeight(Long weight) 
-    {
-        this.weight = weight;
-    }
-
-    public Long getWeight() 
-    {
-        return weight;
-    }
-
-//    public List<Allergen> getAllergenList()
-//    {
-//        return allergenList;
-//    }
-//
-//    public void setAllergenList(List<Allergen> allergenList)
-//    {
-//        this.allergenList = allergenList;
-//    }
+    private Double weight;
 
     @Override
     public String toString() {
