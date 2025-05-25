@@ -20,6 +20,15 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
         </dependency>
+<!--        <dependency>-->
+<!--            <groupId>jakarta.servlet</groupId>-->
+<!--            <artifactId>jakarta.servlet-api</artifactId>-->
+<!--        </dependency>-->
+        <!--公共模块-->
+        <dependency>
+            <groupId>top.codeflux</groupId>
+            <artifactId>intelligentNutrition-common</artifactId>
+        </dependency>
     </dependencies>
 
     <properties>

@@ -1,13 +1,17 @@
 package top.codeflux.ai.service;
 
+import org.springframework.ai.chat.client.ChatClient;
+import top.codeflux.ai.domain.dto.ChatPrompt;
+
 /**
  * @author qht
  * @date 2025/5/17
  */
 public interface AiService {
     /**
-     * 通义千问VL-Max
+     * 多模态
      * @return
      */
-    String qwenVlMax();
+    ChatClient.CallResponseSpec chatMultiModel(ChatPrompt prompt);
+
 }
