@@ -4,6 +4,7 @@ import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import top.codeflux.ai.constants.DefaultSystem;
 
 /**
  * @author qht
@@ -11,10 +12,11 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration
 public class AiConfiguration {
+
     @Bean
     public ChatClient chatClient(ChatModel chatModel) {
         return ChatClient.builder(chatModel)
+                .defaultSystem(DefaultSystem.DEFAULT)
                 .build();
-
     }
 }
