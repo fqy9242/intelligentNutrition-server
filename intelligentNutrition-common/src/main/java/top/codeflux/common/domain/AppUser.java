@@ -1,8 +1,12 @@
 package top.codeflux.common.domain;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import top.codeflux.common.annotation.Excel;
@@ -15,6 +19,9 @@ import top.codeflux.common.core.domain.BaseEntity;
  * @date 2025-05-16
  */
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class AppUser extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
@@ -44,6 +51,9 @@ public class AppUser extends BaseEntity
     /** 体重 */
     @Excel(name = "体重")
     private Double weight;
+
+//    private LocalDateTime createTime;
+//    private LocalDateTime updateTime;
 
     @Override
     public String toString() {

@@ -3,6 +3,7 @@ package top.codeflux.appUser.service;
 import java.util.List;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import top.codeflux.appUser.domain.dto.AppUserDto;
 import top.codeflux.common.domain.AppUser;
 import top.codeflux.appUser.domain.dto.AppUserLoginDto;
 import top.codeflux.appUser.domain.vo.AppUserLoginVo;
@@ -37,7 +38,7 @@ public interface IAppUserService extends IService<AppUser> {
      * @param appUser app注册用户
      * @return 结果
      */
-    public int insertAppUser(AppUser appUser);
+    public int insertAppUser(AppUserDto dto);
 
     /**
      * 修改app注册用户
@@ -45,7 +46,7 @@ public interface IAppUserService extends IService<AppUser> {
      * @param appUser app注册用户
      * @return 结果
      */
-    public int updateAppUser(AppUser appUser);
+    public int updateAppUser(AppUserDto dto);
 
     /**
      * 批量删除app注册用户

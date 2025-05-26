@@ -63,8 +63,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="avatar != null and avatar != ''">avatar,</if>
             <if test="height != null">height,</if>
             <if test="weight != null">weight,</if>
-            <if test="createTime != null">create_time,</if>
-            <if test="updateTime != null">update_time,</if>
+            create_time, update_time
+<!--            <if test="createTime != null">create_time,</if>-->
+<!--            <if test="updateTime != null">update_time,</if>-->
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="studentNumber != null and studentNumber != ''">#{studentNumber},</if>
@@ -73,8 +74,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="avatar != null and avatar != ''">#{avatar},</if>
             <if test="height != null">#{height},</if>
             <if test="weight != null">#{weight},</if>
-            <if test="createTime != null">#{createTime},</if>
-            <if test="updateTime != null">#{updateTime},</if>
+            now(), now()
          </trim>
     </insert>
 

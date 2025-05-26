@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import top.codeflux.appUser.domain.dto.AppUserDto;
 import top.codeflux.appUser.domain.vo.AppUserVo;
 import top.codeflux.common.annotation.Log;
 import top.codeflux.common.core.controller.BaseController;
@@ -77,9 +78,9 @@ public class AppUserController extends BaseController
     @PreAuthorize("@ss.hasPermi('intelligentNutrition-appUser:appUser:add')")
     @Log(title = "app注册用户", businessType = BusinessType.INSERT)
     @PostMapping
-    public AjaxResult add(@RequestBody AppUser appUser)
+    public AjaxResult add(@RequestBody AppUserDto dto)
     {
-        return toAjax(appUserService.insertAppUser(appUser));
+        return toAjax(appUserService.insertAppUser(dto));
     }
 
     /**
@@ -88,9 +89,9 @@ public class AppUserController extends BaseController
     @PreAuthorize("@ss.hasPermi('intelligentNutrition-appUser:appUser:edit')")
     @Log(title = "app注册用户", businessType = BusinessType.UPDATE)
     @PutMapping
-    public AjaxResult edit(@RequestBody AppUser appUser)
+    public AjaxResult edit(@RequestBody AppUserDto dto)
     {
-        return toAjax(appUserService.updateAppUser(appUser));
+        return toAjax(appUserService.updateAppUser(dto));
     }
 
     /**

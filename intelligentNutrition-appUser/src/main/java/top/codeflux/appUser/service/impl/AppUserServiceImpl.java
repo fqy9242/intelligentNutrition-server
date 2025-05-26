@@ -2,6 +2,9 @@ package top.codeflux.appUser.service.impl;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
 
@@ -10,6 +13,7 @@ import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.BeanUtils;
 import org.springframework.util.DigestUtils;
 import top.codeflux.appUser.domain.dto.AppUserLoginDto;
+import top.codeflux.appUser.domain.dto.AppUserDto;
 import top.codeflux.appUser.domain.vo.AppUserLoginVo;
 import top.codeflux.appUser.domain.vo.AppUserVo;
 import top.codeflux.common.constant.ResponseMessage;
@@ -85,33 +89,40 @@ public class AppUserServiceImpl extends ServiceImpl<AppUserMapper, AppUser> impl
 
     /**
      * 新增app注册用户
-     * 
-     * @param appUser app注册用户
-     * @return 结果
      */
     @Transactional
     @Override
-    public int insertAppUser(AppUser appUser) {
-        appUser.setCreateTime(DateUtils.getNowDate());
-        int rows = appUserMapper.insertAppUser(appUser);
-//        insertAllergen(appUser);
-        return rows;
+    public int insertAppUser(AppUserDto dto) {
+        AppUser user = new AppUser();
+        BeanUtils.copyProperties(dto, user);
+        if (user.getPassword() == null) {
+            // 设置默认密码
+            user.setPassword(DigestUtils.md5DigestAsHex(user.getStudentNumber().getBytes()));
+        } else {
+            user.setPassword(DigestUtils.md5DigestAsHex(user.getPassword().getBytes()));
+        }
+        appUserMapper.insertAppUser(user);
+        insertAllergen(dto.getStudentNumber(), dto.getAllergenList());
+        return 1;
     }
 
     /**
      * 修改app注册用户
-     * 
-     * @param appUser app注册用户
-     * @return 结果
      */
     @Transactional
     @Override
-    public int updateAppUser(AppUser appUser)
-    {
-        appUser.setUpdateTime(DateUtils.getNowDate());
-        appUserMapper.deleteAllergenByStudentId(appUser.getId());
-//        insertAllergen(appUser);
-        return appUserMapper.updateAppUser(appUser);
+    public int updateAppUser(AppUserDto dto) {
+        // 创建一个实体对象 并将dto的属性拷贝过去
+        AppUser user = new AppUser();
+        BeanUtils.copyProperties(dto, user);
+        user.setUpdateTime(DateUtils.getNowDate());
+        // 调用接口更新用户表
+        appUserMapper.updateAppUser(user);
+        // 先删除该用户所有的过敏源信息
+        appUserMapper.deleteAllergenByStudentId(user.getStudentNumber());
+        // 在批量插入该用户的过敏源信息
+        insertAllergen(dto.getStudentNumber(),dto.getAllergenList());
+        return 1;
     }
 
     /**
@@ -162,25 +173,16 @@ public class AppUserServiceImpl extends ServiceImpl<AppUserMapper, AppUser> impl
 
     /**
      * 新增过敏原信息
-     * 
-     * @param appUser app注册用户对象
      */
-    public void insertAllergen(AppUserVo appUser) {
-        List<Allergen> allergenList = appUser.getAllergenList();
-//        List<Allergen> allergenList = null;
-        String id = appUser.getId();
-        if (StringUtils.isNotNull(allergenList))
-        {
+    public void insertAllergen(String studentNumber, List<Allergen> allergenList) {
+        if (StringUtils.isNotNull(allergenList) && !allergenList.isEmpty()) {
             List<Allergen> list = new ArrayList<>();
-            for (Allergen allergen : allergenList)
-            {
-                allergen.setStudentId(id);
-                list.add(allergen);
-            }
-            if (list.size() > 0)
-            {
+            allergenList.forEach(a -> {
+                a.setCreateTime(LocalDateTime.now());
+                a.setStudentNumber(studentNumber);
+                list.add(a);
+            });
                 appUserMapper.batchAllergen(list);
-            }
         }
     }
 
