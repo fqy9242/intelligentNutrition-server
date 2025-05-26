@@ -201,6 +201,13 @@ public class AppUserServiceImpl extends ServiceImpl<AppUserMapper, AppUser> impl
             BigDecimal formattedBmi = new BigDecimal(bmi).setScale(2, RoundingMode.HALF_UP);
             vo.setBMI(formattedBmi.doubleValue());
         }
+        // 查询用户过敏源等信息并封装到vo对象
+        List<String> simpleAllergenInfoList = new ArrayList<>();
+        List<Allergen> allergensDetailList = appUserMapper.selectAllergenByStudentNumber(user.getStudentNumber());
+        allergensDetailList.forEach(a -> {
+            simpleAllergenInfoList.add(a.getAllergen());
+        });
+        vo.setAllergen(simpleAllergenInfoList);
         return vo;
     }
 }
