@@ -21,7 +21,7 @@ public interface IAppUserService extends IService<AppUser> {
      * @param id app注册用户主键
      * @return app注册用户
      */
-    public AppUser selectAppUserById(String id);
+    public AppUserVo selectAppUserById(String id);
 
     /**
      * 查询app注册用户列表

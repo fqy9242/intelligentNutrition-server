@@ -42,7 +42,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </where>
     </select>
     
-    <select id="selectAppUserById" parameterType="String" resultMap="AppUserAllergenResult">
+    <select id="selectAppUserById" parameterType="String">
         select id, student_number, name, password, avatar, height, weight, create_time, update_time
         from app_user
         where id = #{id}

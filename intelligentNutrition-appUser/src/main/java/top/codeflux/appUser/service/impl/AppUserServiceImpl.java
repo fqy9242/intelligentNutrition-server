@@ -48,9 +48,18 @@ public class AppUserServiceImpl extends ServiceImpl<AppUserMapper, AppUser> impl
      * @return app注册用户
      */
     @Override
-    public AppUser selectAppUserById(String id)
+    public AppUserVo selectAppUserById(String id)
     {
-        return appUserMapper.selectAppUserById(id);
+        // 获取数据库实体对象
+        AppUser appUser = appUserMapper.selectAppUserById(id);
+        // 查询用户过敏源
+        List<Allergen> allergens = appUserMapper.selectAllergenByStudentNumber(appUser.getStudentNumber());
+        // 创建一个vo对象 并绑定过敏源
+        AppUserVo vo = new AppUserVo();
+        vo.setAllergenList(allergens);
+        // 拷贝属性
+        BeanUtils.copyProperties(appUser, vo);
+        return vo;
     }
 
     /**

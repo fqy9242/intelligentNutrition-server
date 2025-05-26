@@ -39,10 +39,10 @@ public class AppUserVo implements Serializable {
 
     /** 身高 */
     @Excel(name = "身高")
-    private Long height;
+    private Double height;
 
     /** 体重 */
     @Excel(name = "体重")
-    private Long weight;
+    private Double weight;
     List<Allergen> allergenList;
 }
