@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import top.codeflux.appUser.domain.PhysicalExaminationPlan;
 import top.codeflux.appUser.domain.dto.AppUserLoginDto;
 import top.codeflux.appUser.domain.vo.AppUserLoginVo;
+import top.codeflux.appUser.service.HistoryHealthDataService;
 import top.codeflux.appUser.service.IAppUserService;
 import top.codeflux.appUser.service.PhysicalExaminationPlanService;
 import top.codeflux.common.annotation.Anonymous;
@@ -25,7 +26,8 @@ public class AppUserClientController extends BaseController {
     @Autowired
     private PhysicalExaminationPlanService physicalExaminationPlanService;
     @Autowired
-    private RedisTemplate redisTemplate;
+    private HistoryHealthDataService historyHealthDataService;
+
     // 用户登录
     @Anonymous
     @PostMapping("/login")
@@ -39,9 +41,14 @@ public class AppUserClientController extends BaseController {
      * @return
      */
     @GetMapping("/physicalExaminationPlan")
-    @Anonymous
+//    @Anonymous
     public AjaxResult physicalExaminationPlan() {
         PhysicalExaminationPlan plan  = physicalExaminationPlanService.getPhysicalExaminationPlan();
         return success(plan);
+    }
+    @GetMapping("/historyHealthData")
+    @Anonymous
+    public AjaxResult historyHealthData(String studentNumber) {
+        return success(historyHealthDataService.getByStudentNumber(studentNumber));
     }
 }
