@@ -17,6 +17,7 @@ import top.codeflux.appUser.domain.dto.AppUserLoginDto;
 import top.codeflux.appUser.domain.dto.AppUserDto;
 import top.codeflux.appUser.domain.vo.AppUserLoginVo;
 import top.codeflux.appUser.domain.vo.AppUserVo;
+import top.codeflux.appUser.utils.CommonUtil;
 import top.codeflux.common.constant.ResponseMessage;
 import top.codeflux.common.core.domain.model.LoginUser;
 import top.codeflux.common.exception.base.BaseException;
@@ -199,10 +200,7 @@ public class AppUserServiceImpl extends ServiceImpl<AppUserMapper, AppUser> impl
         vo.setToken(token);
         // 设置IBM
         if (user.getWeight() != null && user.getHeight() != null) {
-            double heightInMeters = user.getHeight() / 100.0; // 将身高从厘米转换为米
-            double bmi = user.getWeight() / (heightInMeters * heightInMeters);
-            BigDecimal formattedBmi = new BigDecimal(bmi).setScale(2, RoundingMode.HALF_UP);
-            vo.setBMI(formattedBmi.doubleValue());
+            vo.setBMI(CommonUtil.getBmi(user.getWeight(), user.getHeight()));
         }
         // 查询用户过敏源等信息并封装到vo对象
         List<String> simpleAllergenInfoList = new ArrayList<>();

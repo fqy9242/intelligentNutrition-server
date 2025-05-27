@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import top.codeflux.appUser.domain.HistoryHealthData;
 import top.codeflux.appUser.mapper.HistoryHealthDataMapper;
 import top.codeflux.appUser.service.HistoryHealthDataService;
+import top.codeflux.appUser.utils.CommonUtil;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -28,10 +29,7 @@ public class HistoryHealthDataServiceImpl extends ServiceImpl<HistoryHealthDataM
         // 计算BMI
         for (HistoryHealthData historyHealthData : list) {
             if (historyHealthData.getWeight() != null && historyHealthData.getHeight() != null && historyHealthData.getHeight() > 0) {
-                double heightInMeters = historyHealthData.getHeight() / 100.0; // 将身高从厘米转换为米
-                double bmi = historyHealthData.getWeight() / (heightInMeters * heightInMeters);
-                BigDecimal formattedBmi = new BigDecimal(bmi).setScale(2, RoundingMode.HALF_UP);
-                historyHealthData.setBmi(formattedBmi.doubleValue());
+                historyHealthData.setBmi(CommonUtil.getBmi(historyHealthData.getWeight(), historyHealthData.getHeight()));
             }
         }
         return list;
