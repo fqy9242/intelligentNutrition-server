@@ -3,6 +3,7 @@ package top.codeflux.appUser.service;
 import java.util.List;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import top.codeflux.appUser.domain.PhysicalExaminationPlan;
 import top.codeflux.appUser.domain.dto.AppUserDto;
 import top.codeflux.common.domain.AppUser;
 import top.codeflux.appUser.domain.dto.AppUserLoginDto;
@@ -70,4 +71,6 @@ public interface IAppUserService extends IService<AppUser> {
      * @return vo
      */
     AppUserLoginVo login(AppUserLoginDto dto);
+
+
 }

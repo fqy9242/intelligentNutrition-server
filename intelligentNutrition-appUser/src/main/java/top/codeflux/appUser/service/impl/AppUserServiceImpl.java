@@ -12,6 +12,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.BeanUtils;
 import org.springframework.util.DigestUtils;
+import top.codeflux.appUser.domain.PhysicalExaminationPlan;
 import top.codeflux.appUser.domain.dto.AppUserLoginDto;
 import top.codeflux.appUser.domain.dto.AppUserDto;
 import top.codeflux.appUser.domain.vo.AppUserLoginVo;
@@ -170,6 +171,8 @@ public class AppUserServiceImpl extends ServiceImpl<AppUserMapper, AppUser> impl
         }
         return getUserLoginVo(user);
     }
+
+
 
     /**
      * 新增过敏原信息

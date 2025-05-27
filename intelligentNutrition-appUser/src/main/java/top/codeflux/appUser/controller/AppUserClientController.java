@@ -2,13 +2,13 @@ package top.codeflux.appUser.controller;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.web.bind.annotation.*;
+import top.codeflux.appUser.domain.PhysicalExaminationPlan;
 import top.codeflux.appUser.domain.dto.AppUserLoginDto;
 import top.codeflux.appUser.domain.vo.AppUserLoginVo;
 import top.codeflux.appUser.service.IAppUserService;
+import top.codeflux.appUser.service.PhysicalExaminationPlanService;
 import top.codeflux.common.annotation.Anonymous;
 import top.codeflux.common.core.controller.BaseController;
 import top.codeflux.common.core.domain.AjaxResult;
@@ -22,11 +22,26 @@ import top.codeflux.common.core.domain.AjaxResult;
 public class AppUserClientController extends BaseController {
     @Autowired
     private IAppUserService userService;
+    @Autowired
+    private PhysicalExaminationPlanService physicalExaminationPlanService;
+    @Autowired
+    private RedisTemplate redisTemplate;
     // 用户登录
     @Anonymous
     @PostMapping("/login")
     public AjaxResult login(@RequestBody AppUserLoginDto dto) {
         AppUserLoginVo vo = userService.login(dto);
         return success(vo);
+    }
+
+    /**
+     *  获取下一次的体检计划
+     * @return
+     */
+    @GetMapping("/physicalExaminationPlan")
+    @Anonymous
+    public AjaxResult physicalExaminationPlan() {
+        PhysicalExaminationPlan plan  = physicalExaminationPlanService.getPhysicalExaminationPlan();
+        return success(plan);
     }
 }
