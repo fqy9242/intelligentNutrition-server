@@ -2,6 +2,7 @@ package top.codeflux.ai.service.impl;
 
 import com.alibaba.cloud.ai.dashscope.chat.DashScopeChatOptions;
 import lombok.RequiredArgsConstructor;
+import org.apache.http.config.MessageConstraints;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.messages.UserMessage;
 import org.springframework.ai.chat.prompt.Prompt;
@@ -13,6 +14,12 @@ import top.codeflux.ai.constants.MyChatModel;
 import top.codeflux.ai.domain.dto.ChatPrompt;
 import top.codeflux.ai.domain.vo.FoodRecognitionResult;
 import top.codeflux.ai.service.AiService;
+import top.codeflux.common.constant.ResponseMessage;
+import top.codeflux.common.domain.DietaryRecord;
+import top.codeflux.common.exception.base.BaseException;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author qht
@@ -56,5 +63,73 @@ public class AiServiceImpl implements AiService {
         var callRes = chatMultiModel(ChatPrompt.builder().text(prompt).file(image).build());
         // 封装成实体并返回
         return callRes.entity(FoodRecognitionResult.class);
+    }
+
+    /**
+     * 填充饮食记录信息
+     * @param entity
+     * @return
+     */
+    @Override
+    public DietaryRecord fillDietaryRecord(DietaryRecord entity) {
+        // 需要AI分析的信息字段列表
+        List<String> requireFillList = new ArrayList<>();
+
+        // 如果食物重量为null 则抛出异常
+        if (entity.getFoodWeight() == null) {
+            throw new BaseException(ResponseMessage.WEIGHT_CANNOT_NULL);
+        }
+
+        // 检查各项营养成分是否为空，将缺失的添加到分析列表
+        if (entity.getFoodCalorie() == null) {
+            requireFillList.add("热量");
+        }
+        if (entity.getFoodProtein() == null) {
+            requireFillList.add("蛋白质");
+        }
+        if (entity.getFoodFat() == null) {
+            requireFillList.add("脂肪");
+        }
+        if (entity.getFoodDietaryFiber() == null) {
+            requireFillList.add("膳食纤维");
+        }
+        if (entity.getFoodDietaryFiber() == null) {
+            requireFillList.add("碳水化合物");
+        }
+
+        // 如果没有需要填充的信息，直接返回
+        if (requireFillList.isEmpty()) {
+            return entity;
+        }
+        // 构建提示词
+        String prompt = String.format(
+                "请分析这份食物的营养成分。食物名称：%s，重量：%.1f克。请告诉我它的%s含量。请直接返回数值，用逗号分隔。",
+                entity.getFoodName(),
+                entity.getFoodWeight(),
+                String.join("、", requireFillList)
+        );
+
+        // 调用AI进行分析
+        var response = chatClient.prompt(prompt).call().content();
+        String[] values = response.split(",");
+        int index = 0;
+
+        // 填充分析结果
+        if (entity.getFoodCalorie() == null && index < values.length) {
+            entity.setFoodCalorie(Double.parseDouble(values[index++].trim()));
+        }
+        if (entity.getFoodProtein() == null && index < values.length) {
+            entity.setFoodProtein(Double.parseDouble(values[index++].trim()));
+        }
+        if (entity.getFoodFat() == null && index < values.length) {
+            entity.setFoodFat(Double.parseDouble(values[index++].trim()));
+        }
+        if (entity.getFoodDietaryFiber() == null && index < values.length) {
+            entity.setFoodDietaryFiber(Double.parseDouble(values[index].trim()));
+        }
+        if (entity.getFoodDietaryFiber() == null && index < values.length) {
+            entity.setFoodDietaryFiber(Double.parseDouble(values[index].trim()));
+        }
+        return entity;
     }
 }

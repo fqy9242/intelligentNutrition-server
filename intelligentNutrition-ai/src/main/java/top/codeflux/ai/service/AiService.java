@@ -5,6 +5,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.web.multipart.MultipartFile;
 import top.codeflux.ai.domain.dto.ChatPrompt;
 import top.codeflux.ai.domain.vo.FoodRecognitionResult;
+import top.codeflux.common.domain.DietaryRecord;
 
 /**
  * @author qht
@@ -23,4 +24,5 @@ public interface AiService {
      */
     FoodRecognitionResult getFoodInfo(Resource image);
 
+    DietaryRecord fillDietaryRecord(DietaryRecord entity);
 }

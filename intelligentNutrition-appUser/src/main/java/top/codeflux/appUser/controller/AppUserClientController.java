@@ -2,11 +2,12 @@ package top.codeflux.appUser.controller;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
+import top.codeflux.common.domain.DietaryRecord;
 import top.codeflux.appUser.domain.PhysicalExaminationPlan;
 import top.codeflux.appUser.domain.dto.AppUserLoginDto;
 import top.codeflux.appUser.domain.vo.AppUserLoginVo;
+import top.codeflux.appUser.service.DietaryRecordService;
 import top.codeflux.appUser.service.HistoryHealthDataService;
 import top.codeflux.appUser.service.IAppUserService;
 import top.codeflux.appUser.service.PhysicalExaminationPlanService;
@@ -27,6 +28,8 @@ public class AppUserClientController extends BaseController {
     private PhysicalExaminationPlanService physicalExaminationPlanService;
     @Autowired
     private HistoryHealthDataService historyHealthDataService;
+    @Autowired
+    private DietaryRecordService dietaryRecordService;
 
     // 用户登录
     @Anonymous
@@ -47,8 +50,19 @@ public class AppUserClientController extends BaseController {
         return success(plan);
     }
     @GetMapping("/historyHealthData")
-    @Anonymous
+//    @Anonymous
     public AjaxResult historyHealthData(String studentNumber) {
         return success(historyHealthDataService.getByStudentNumber(studentNumber));
+    }
+
+    /**
+     *
+     * @param dietaryRecord
+     * @return
+     */
+    @PostMapping("/dietaryRecord")
+    public AjaxResult saveDietaryRecord(@RequestBody DietaryRecord dietaryRecord) {
+        dietaryRecordService.save(dietaryRecord);
+        return success();
     }
 }
