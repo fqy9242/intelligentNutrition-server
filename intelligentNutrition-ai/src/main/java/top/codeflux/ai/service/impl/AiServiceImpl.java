@@ -93,7 +93,7 @@ public class AiServiceImpl implements AiService {
         if (entity.getFoodDietaryFiber() == null) {
             requireFillList.add("膳食纤维");
         }
-        if (entity.getFoodDietaryFiber() == null) {
+        if (entity.getFoodCarbohydrate() == null) {
             requireFillList.add("碳水化合物");
         }
 

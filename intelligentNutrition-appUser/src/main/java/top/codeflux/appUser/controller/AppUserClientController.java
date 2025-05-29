@@ -3,6 +3,7 @@ package top.codeflux.appUser.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import top.codeflux.appUser.domain.vo.TodayDietaryRecordVo;
 import top.codeflux.common.domain.DietaryRecord;
 import top.codeflux.appUser.domain.PhysicalExaminationPlan;
 import top.codeflux.appUser.domain.dto.AppUserLoginDto;
@@ -64,5 +65,11 @@ public class AppUserClientController extends BaseController {
     public AjaxResult saveDietaryRecord(@RequestBody DietaryRecord dietaryRecord) {
         dietaryRecordService.save(dietaryRecord);
         return success();
+    }
+    @GetMapping("/dietaryRecord/{studentNumber}")
+    @Anonymous
+    public AjaxResult saveDietaryRecord(@PathVariable String studentNumber) {
+        TodayDietaryRecordVo vo  = dietaryRecordService.getTodayByStudentNumber(studentNumber);
+        return success(vo);
     }
 }

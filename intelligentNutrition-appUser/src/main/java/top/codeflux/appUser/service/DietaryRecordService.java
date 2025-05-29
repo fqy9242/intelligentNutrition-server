@@ -1,6 +1,7 @@
 package top.codeflux.appUser.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import top.codeflux.appUser.domain.vo.TodayDietaryRecordVo;
 import top.codeflux.common.domain.DietaryRecord;
 
 /**
@@ -9,4 +10,5 @@ import top.codeflux.common.domain.DietaryRecord;
  */
 public interface DietaryRecordService extends IService<DietaryRecord> {
 
+    TodayDietaryRecordVo getTodayByStudentNumber(String studentNumber);
 }

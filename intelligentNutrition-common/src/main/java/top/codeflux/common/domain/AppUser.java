@@ -27,7 +27,7 @@ public class AppUser extends BaseEntity
     private static final long serialVersionUID = 1L;
 
     /** $column.columnComment */
-    private String id;
+    private Integer id;
 
     /** 学号 */
     @Excel(name = "学号")
