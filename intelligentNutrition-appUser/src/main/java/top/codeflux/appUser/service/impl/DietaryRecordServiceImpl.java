@@ -30,6 +30,19 @@ public class DietaryRecordServiceImpl extends ServiceImpl<DietaryRecordMapper, D
         if (entity.getCreateTime() == null) {
             entity.setCreateTime(LocalDateTime.now());
         }
+        if (entity.getMealType() == null) {
+            // 根据时间段判断餐次
+            int hour = entity.getCreateTime().getHour();
+            if (hour >= 5 && hour < 10) {
+                entity.setMealType(DietaryRecord.BREAKFAST); // 早餐 5:00-10:00
+            } else if (hour >= 10 && hour < 15) {
+                entity.setMealType(DietaryRecord.LUNCH);     // 午餐 10:00-15:00
+            } else if (hour >= 15 && hour < 21) {
+                entity.setMealType(DietaryRecord.DINNER);    // 晚餐 15:00-21:00
+            } else {
+                entity.setMealType(DietaryRecord.OTHER);     // 加餐 其他时间
+            }
+        }
         DietaryRecord record = aiService.fillDietaryRecord(entity);
         return super.save(entity);
     }
