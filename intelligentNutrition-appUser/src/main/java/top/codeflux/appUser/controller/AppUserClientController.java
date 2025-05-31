@@ -1,17 +1,16 @@
 package top.codeflux.appUser.controller;
 
 
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import top.codeflux.appUser.domain.DrinkingWaterRecord;
 import top.codeflux.appUser.domain.vo.TodayDietaryRecordVo;
+import top.codeflux.appUser.service.*;
 import top.codeflux.common.domain.DietaryRecord;
 import top.codeflux.appUser.domain.PhysicalExaminationPlan;
 import top.codeflux.appUser.domain.dto.AppUserLoginDto;
 import top.codeflux.appUser.domain.vo.AppUserLoginVo;
-import top.codeflux.appUser.service.DietaryRecordService;
-import top.codeflux.appUser.service.HistoryHealthDataService;
-import top.codeflux.appUser.service.IAppUserService;
-import top.codeflux.appUser.service.PhysicalExaminationPlanService;
 import top.codeflux.common.annotation.Anonymous;
 import top.codeflux.common.core.controller.BaseController;
 import top.codeflux.common.core.domain.AjaxResult;
@@ -31,6 +30,8 @@ public class AppUserClientController extends BaseController {
     private HistoryHealthDataService historyHealthDataService;
     @Autowired
     private DietaryRecordService dietaryRecordService;
+    @Autowired
+    private DrinkingWaterRecordService drinkingWaterRecordService;
 
     // 用户登录
     @Anonymous
@@ -71,5 +72,14 @@ public class AppUserClientController extends BaseController {
     public AjaxResult saveDietaryRecord(@PathVariable String studentNumber) {
         TodayDietaryRecordVo vo  = dietaryRecordService.getTodayByStudentNumber(studentNumber);
         return success(vo);
+    }
+    @GetMapping("/drinkingWaterRecord")
+    public AjaxResult drinkingWaterRecord(String studentNumber,  @RequestParam(value = "onlyToday", required = false) Integer onlyToday) {
+        return success(drinkingWaterRecordService.getByStudentNumber(studentNumber, onlyToday));
+    }
+    @PostMapping("/drinkingWaterRecord")
+    public AjaxResult saveDrinkingWaterRecord(@RequestBody DrinkingWaterRecord drinkingWaterRecord) {
+        drinkingWaterRecordService.save(drinkingWaterRecord);
+        return success();
     }
 }
