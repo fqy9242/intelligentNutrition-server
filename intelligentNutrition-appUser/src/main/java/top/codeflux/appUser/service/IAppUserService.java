@@ -80,4 +80,11 @@ public interface IAppUserService extends IService<AppUser> {
      */
 
     List<AppUserDto> parseExcelToAppUserList(MultipartFile excelFile);
+
+    /**
+     * 批量插入到AppUser
+     * @param dtoList
+     * @return
+     */
+    int insertAppUserBatch(List<AppUserDto> dtoList);
 }

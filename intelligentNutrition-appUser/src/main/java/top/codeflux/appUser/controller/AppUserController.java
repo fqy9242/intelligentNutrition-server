@@ -143,4 +143,13 @@ public class AppUserController extends BaseController
         return success(list);
     }
 
+    /**
+     * 批量新增app注册用户
+     * @param dtoList
+     * @return
+     */
+    @PostMapping("/addBatch")
+    public AjaxResult addBatch(@RequestBody List<AppUserDto> dtoList) {
+        return toAjax(appUserService.insertAppUserBatch(dtoList));
+    }
 }

@@ -3,6 +3,9 @@ package top.codeflux.common.domain;
 import java.time.LocalDateTime;
 import java.util.List;
 
+
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -26,7 +29,7 @@ public class AppUser extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
 
-    /** $column.columnComment */
+   @TableId(type = IdType.AUTO)
     private Integer id;
 
     /** 学号 */

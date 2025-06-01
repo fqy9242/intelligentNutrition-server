@@ -71,7 +71,7 @@ public interface AppUserMapper extends BaseMapper<AppUser>
      * @param ids 需要删除的数据主键集合
      * @return 结果
      */
-    public int deleteAllergenByStudentIds(String[] ids);
+    public int deleteAllergenByStudentNumbers(String[] ids);
     
     /**
      * 批量新增过敏原
@@ -89,5 +89,6 @@ public interface AppUserMapper extends BaseMapper<AppUser>
      * @param id app注册用户ID
      * @return 结果
      */
-    public int deleteAllergenByStudentId(String id);
+    public int deleteAllergenByStudentNumber(String studentNumber);
+    String[] selectStudentNumberByIds(String[] ids);
 }

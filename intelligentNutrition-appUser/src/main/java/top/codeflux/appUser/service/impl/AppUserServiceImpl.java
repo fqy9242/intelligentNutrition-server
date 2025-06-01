@@ -30,6 +30,8 @@ import top.codeflux.common.utils.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.ArrayList;
+import java.util.Objects;
+
 import top.codeflux.common.utils.StringUtils;
 import org.springframework.transaction.annotation.Transactional;
 import top.codeflux.appUser.domain.Allergen;
@@ -126,7 +128,7 @@ public class AppUserServiceImpl extends ServiceImpl<AppUserMapper, AppUser> impl
         // 调用接口更新用户表
         appUserMapper.updateAppUser(user);
         // 先删除该用户所有的过敏源信息
-        appUserMapper.deleteAllergenByStudentId(user.getStudentNumber());
+        appUserMapper.deleteAllergenByStudentNumber(user.getStudentNumber());
         // 在批量插入该用户的过敏源信息
         insertAllergen(dto.getStudentNumber(),dto.getAllergenList());
         return 1;
@@ -142,7 +144,10 @@ public class AppUserServiceImpl extends ServiceImpl<AppUserMapper, AppUser> impl
     @Override
     public int deleteAppUserByIds(String[] ids)
     {
-        appUserMapper.deleteAllergenByStudentIds(ids);
+        // 根据id查询学号
+        String[] studentNumbers = appUserMapper.selectStudentNumberByIds(ids);
+        // 删除所有过敏源信息
+        appUserMapper.deleteAllergenByStudentNumbers(studentNumbers);
         return appUserMapper.deleteAppUserByIds(ids);
     }
 
@@ -156,7 +161,7 @@ public class AppUserServiceImpl extends ServiceImpl<AppUserMapper, AppUser> impl
     @Override
     public int deleteAppUserById(String id)
     {
-        appUserMapper.deleteAllergenByStudentId(id);
+        appUserMapper.deleteAllergenByStudentNumber(id);
         return appUserMapper.deleteAppUserById(id);
     }
 
@@ -226,6 +231,11 @@ public class AppUserServiceImpl extends ServiceImpl<AppUserMapper, AppUser> impl
                     String[] s = row.getCell(6).getStringCellValue().split(",");
                     List<Allergen> allergenList = new ArrayList<>();
                     for (String string : s) {
+                        String allergenString = string.trim();
+                        if (StringUtils.isEmpty(allergenString)) {
+                            // 跳过空字符串
+                            continue;
+                        }
                         allergenList.add(
                                 Allergen.builder()
                                         .allergen(string.trim())
@@ -245,6 +255,39 @@ public class AppUserServiceImpl extends ServiceImpl<AppUserMapper, AppUser> impl
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    /**
+     * 批量插入到AppUser
+     *
+     * @param dtoList
+     * @return
+     */
+    @Override
+    @Transactional
+    public int insertAppUserBatch(List<AppUserDto> dtoList) {
+        if (dtoList == null || dtoList.isEmpty()) {
+            return 0;
+        }
+        List<AppUser> userList = new ArrayList<>();
+        dtoList.forEach(dto -> {
+            AppUser user = new AppUser();
+            BeanUtils.copyProperties(dto, user);
+            if (user.getPassword() == null) {
+                // 设置默认密码
+                user.setPassword(DigestUtils.md5DigestAsHex(user.getStudentNumber().getBytes()));
+            } else {
+                user.setPassword(DigestUtils.md5DigestAsHex(user.getPassword().getBytes()));
+            }
+            userList.add(user);
+            if (dto.getAllergenList() != null && !dto.getAllergenList().isEmpty()) {
+                // 设置过敏源
+                insertAllergen(dto.getStudentNumber(), dto.getAllergenList());
+            }
+
+        });
+        saveBatch(userList);
+        return userList.size();
     }
 
 

@@ -53,6 +53,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         from allergen
         where student_number = #{student_number}
     </select>
+    <select id="selectStudentNumberByIds">
+        select student_number
+        from app_user
+        where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
 
     <insert id="insertAppUser" parameterType="AppUser" useGeneratedKeys="true" keyProperty="id">
         insert into app_user
@@ -104,14 +112,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </foreach>
     </delete>
     
-    <delete id="deleteAllergenByStudentIds" parameterType="String">
+    <delete id="deleteAllergenByStudentNumbers" parameterType="String">
         delete from allergen where student_number in 
         <foreach item="studentNumber" collection="array" open="(" separator="," close=")">
             #{studentNumber}
         </foreach>
     </delete>
 
-    <delete id="deleteAllergenByStudentId" parameterType="String">
+    <delete id="deleteAllergenByStudentNumber" parameterType="String">
         delete from allergen where student_number = #{studentNumber}
     </delete>
 
