@@ -24,7 +24,7 @@ public class AppUserVo implements Serializable {
     private static final long serialVersionUID = 1L;
 
 
-    private String id;
+    private Integer id;
 
     /** 学号 */
     @Excel(name = "学号")
