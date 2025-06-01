@@ -1,8 +1,12 @@
 package top.codeflux.appUser.controller;
 
+import java.io.InputStream;
 import java.util.List;
 
+import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import top.codeflux.appUser.domain.dto.AppUserDto;
 import top.codeflux.appUser.domain.vo.AppUserVo;
+import top.codeflux.common.annotation.Anonymous;
 import top.codeflux.common.annotation.Log;
 import top.codeflux.common.core.controller.BaseController;
 import top.codeflux.common.core.domain.AjaxResult;
@@ -31,6 +36,7 @@ import top.codeflux.common.core.page.TableDataInfo;
  * @date 2025-05-16
  */
 @RestController
+@Slf4j
 @RequestMapping("/intelligentNutrition-appUser/appUser")
 public class AppUserController extends BaseController
 {
@@ -103,6 +109,26 @@ public class AppUserController extends BaseController
     public AjaxResult remove(@PathVariable String[] ids)
     {
         return toAjax(appUserService.deleteAppUserByIds(ids));
+    }
+
+    /**
+     * 导出批量导入用户模板
+     * @param response
+     */
+    @GetMapping("/exportInputUserTemplate")
+    @Anonymous
+    public void exportInputUserTemplate(HttpServletResponse response) {
+        InputStream inputStream = this.getClass().getClassLoader().getResourceAsStream("templates/用户导入模板.xlsx");
+        try {
+            XSSFWorkbook sheets = new XSSFWorkbook(inputStream);
+            ServletOutputStream outputStream = response.getOutputStream();
+            sheets.write(outputStream);
+            sheets.close();
+            outputStream.close();
+        } catch (Exception e) {
+            log.error("导出批量导入用户模板失败:{}", e.getMessage());
+        }
+
     }
 
 }

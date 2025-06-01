@@ -11,7 +11,7 @@
  Target Server Version : 90200 (9.2.0)
  File Encoding         : 65001
 
- Date: 27/05/2025 10:19:28
+ Date: 31/05/2025 20:00:31
 */
 
 SET NAMES utf8mb4;
@@ -60,6 +60,55 @@ CREATE TABLE `app_user`  (
 -- ----------------------------
 INSERT INTO `app_user` VALUES (1, '2331020130229', '覃惠通', '8347C73A13E73D841030A31D6E0DF86E', 'https://ts3.tc.mm.bing.net/th/id/OIP-C.g5M-iZUiocFCi9YAzojtRAAAAA', 190, 50, '2025-05-16 20:57:57', '2025-05-26 12:06:18');
 INSERT INTO `app_user` VALUES (2, '2333311220111', '李白', '4b2ce66d1b326edf19bdc20aabca8efd', '/profile/upload/2025/05/26/red_oil_20250526163950A001.jpg', 190, 50, '2025-05-26 16:43:30', '2025-05-26 16:43:30');
+
+-- ----------------------------
+-- Table structure for dietary_record
+-- ----------------------------
+DROP TABLE IF EXISTS `dietary_record`;
+CREATE TABLE `dietary_record`  (
+  `id` int UNSIGNED NOT NULL AUTO_INCREMENT,
+  `student_number` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `meal_type` tinyint NOT NULL COMMENT '餐次 0早餐 1午餐 2晚餐 3加餐',
+  `food_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '食物名称',
+  `food_weight` double NULL DEFAULT NULL COMMENT '食物重量 单位克',
+  `food_calorie` int NULL DEFAULT NULL COMMENT '卡路里',
+  `food_protein` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '蛋白质',
+  `food_fat` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '脂肪',
+  `food_carbohydrate` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '碳水化合物',
+  `food_dietary_fiber` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '膳食纤维',
+  `create_time` datetime NOT NULL,
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE INDEX `nk_one`(`student_number` ASC, `create_time` ASC) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 12 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用餐记录' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of dietary_record
+-- ----------------------------
+INSERT INTO `dietary_record` VALUES (1, '2331020130229', 0, '塔斯汀腾蛟鸡腿堡', 200, 450, '18.0', '22.0', NULL, '3.0', '2025-05-28 23:49:00');
+INSERT INTO `dietary_record` VALUES (2, '2331020130229', 0, '全麦面包', 100, 246, '8.9', '3.7', NULL, '9.1', '2025-05-29 07:13:00');
+INSERT INTO `dietary_record` VALUES (3, '2331020130229', 0, '纯牛奶', 250, 125, '8.0', '6.0', NULL, '0.0', '2025-05-29 07:30:00');
+INSERT INTO `dietary_record` VALUES (4, '2331020130229', 1, '麻辣烫', 500, 300, '20.0', '15.0', NULL, '8.0', '2025-05-29 12:42:00');
+INSERT INTO `dietary_record` VALUES (5, '2331020130229', 2, '塔斯汀汉堡', 100, 300, '12.0', '15.0', NULL, '2.0', '2025-05-29 21:43:00');
+INSERT INTO `dietary_record` VALUES (10, '2331020130229', 3, '酸辣粉', 100, 350, '10.0', '15.0', '45.0', '3.0', '2025-05-29 23:09:40');
+INSERT INTO `dietary_record` VALUES (11, '2331020130229', 1, '酸辣粉', 100, 350, '10.0', '15.0', '45.0', '2.0', '2025-05-30 19:58:50');
+
+-- ----------------------------
+-- Table structure for drinking_water_record
+-- ----------------------------
+DROP TABLE IF EXISTS `drinking_water_record`;
+CREATE TABLE `drinking_water_record`  (
+  `id` int UNSIGNED NOT NULL AUTO_INCREMENT,
+  `student_number` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '学号',
+  `capacity` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '喝水容量(毫升)',
+  `drinking_time` datetime NULL DEFAULT NULL COMMENT '喝水时间',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of drinking_water_record
+-- ----------------------------
+INSERT INTO `drinking_water_record` VALUES (1, '2331020130229', '50ml', '2025-05-31 19:31:27');
+INSERT INTO `drinking_water_record` VALUES (2, '2331020130229', '60ml', '2025-05-31 19:31:00');
 
 -- ----------------------------
 -- Table structure for gen_table
@@ -374,7 +423,7 @@ CREATE TABLE `sys_job_log`  (
   `exception_info` varchar(2000) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '异常信息',
   `create_time` datetime NULL DEFAULT NULL COMMENT '创建时间',
   PRIMARY KEY (`job_log_id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '定时任务调度日志表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '定时任务调度日志表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of sys_job_log
@@ -397,7 +446,7 @@ CREATE TABLE `sys_logininfor`  (
   PRIMARY KEY (`info_id`) USING BTREE,
   INDEX `idx_sys_logininfor_s`(`status` ASC) USING BTREE,
   INDEX `idx_sys_logininfor_lt`(`login_time` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 113 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '系统访问记录' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 120 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '系统访问记录' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of sys_logininfor
@@ -415,6 +464,13 @@ INSERT INTO `sys_logininfor` VALUES (109, 'admin', '127.0.0.1', '内网IP', 'Chr
 INSERT INTO `sys_logininfor` VALUES (110, 'admin', '127.0.0.1', '内网IP', 'Chrome 13', 'Windows 10', '0', '登录成功', '2025-05-26 16:39:09');
 INSERT INTO `sys_logininfor` VALUES (111, 'admin', '127.0.0.1', '内网IP', 'Chrome 13', 'Windows 10', '1', '验证码已失效', '2025-05-27 08:12:57');
 INSERT INTO `sys_logininfor` VALUES (112, 'admin', '127.0.0.1', '内网IP', 'Chrome 13', 'Windows 10', '0', '登录成功', '2025-05-27 08:12:59');
+INSERT INTO `sys_logininfor` VALUES (113, 'admin', '127.0.0.1', '内网IP', 'Chrome 13', 'Windows 10', '1', '验证码已失效', '2025-05-27 11:09:57');
+INSERT INTO `sys_logininfor` VALUES (114, 'admin', '127.0.0.1', '内网IP', 'Chrome 13', 'Windows 10', '0', '登录成功', '2025-05-27 11:10:03');
+INSERT INTO `sys_logininfor` VALUES (115, 'admin', '127.0.0.1', '内网IP', 'Chrome 13', 'Windows 10', '1', '验证码已失效', '2025-05-27 20:02:01');
+INSERT INTO `sys_logininfor` VALUES (116, 'admin', '127.0.0.1', '内网IP', 'Chrome 13', 'Windows 10', '0', '登录成功', '2025-05-27 20:02:04');
+INSERT INTO `sys_logininfor` VALUES (117, 'admin', '127.0.0.1', '内网IP', 'Chrome 13', 'Windows 10', '0', '登录成功', '2025-05-27 20:33:39');
+INSERT INTO `sys_logininfor` VALUES (118, 'admin', '127.0.0.1', '内网IP', 'Chrome 13', 'Windows 10', '1', '验证码已失效', '2025-05-27 21:34:08');
+INSERT INTO `sys_logininfor` VALUES (119, 'admin', '127.0.0.1', '内网IP', 'Chrome 13', 'Windows 10', '0', '登录成功', '2025-05-27 21:34:58');
 
 -- ----------------------------
 -- Table structure for sys_menu
@@ -828,7 +884,7 @@ CREATE TABLE `sys_user`  (
 -- ----------------------------
 -- Records of sys_user
 -- ----------------------------
-INSERT INTO `sys_user` VALUES (1, 103, 'admin', '管理员', '00', '59605904@qq.com', '19999999999', '0', '', '$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2', '0', '0', '127.0.0.1', '2025-05-27 08:13:00', 'admin', '2025-05-15 15:11:20', '', '2025-05-27 08:13:00', '管理员');
+INSERT INTO `sys_user` VALUES (1, 103, 'admin', '管理员', '00', '59605904@qq.com', '19999999999', '0', '', '$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2', '0', '0', '127.0.0.1', '2025-05-27 21:34:58', 'admin', '2025-05-15 15:11:20', '', '2025-05-27 21:34:58', '管理员');
 INSERT INTO `sys_user` VALUES (2, 105, 'ry', '若依', '00', 'ry@qq.com', '15666666666', '1', '', '$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2', '0', '0', '127.0.0.1', '2025-05-15 15:11:20', 'admin', '2025-05-15 15:11:20', '', NULL, '测试员');
 
 -- ----------------------------
