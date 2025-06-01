@@ -3,6 +3,7 @@ package top.codeflux.appUser.service;
 import java.util.List;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import org.springframework.web.multipart.MultipartFile;
 import top.codeflux.appUser.domain.PhysicalExaminationPlan;
 import top.codeflux.appUser.domain.dto.AppUserDto;
 import top.codeflux.common.domain.AppUser;
@@ -72,5 +73,11 @@ public interface IAppUserService extends IService<AppUser> {
      */
     AppUserLoginVo login(AppUserLoginDto dto);
 
+    /**
+     * 解析Excel文件并转换为AppUser列表
+     * @param excelFile
+     * @return
+     */
 
+    List<AppUserDto> parseExcelToAppUserList(MultipartFile excelFile);
 }

@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 import top.codeflux.appUser.domain.dto.AppUserDto;
 import top.codeflux.appUser.domain.vo.AppUserVo;
 import top.codeflux.common.annotation.Anonymous;
@@ -106,8 +107,7 @@ public class AppUserController extends BaseController
     @PreAuthorize("@ss.hasPermi('intelligentNutrition-appUser:appUser:remove')")
     @Log(title = "app注册用户", businessType = BusinessType.DELETE)
 	@DeleteMapping("/{ids}")
-    public AjaxResult remove(@PathVariable String[] ids)
-    {
+    public AjaxResult remove(@PathVariable String[] ids) {
         return toAjax(appUserService.deleteAppUserByIds(ids));
     }
 
@@ -129,6 +129,18 @@ public class AppUserController extends BaseController
             log.error("导出批量导入用户模板失败:{}", e.getMessage());
         }
 
+    }
+
+    /**
+     * 解析Excel文件并转换为AppUser列表
+     * @param excelFile
+     * @return
+     */
+    @Anonymous
+    @PostMapping("/parseExcelToAppUserList")
+    public AjaxResult parseExcelToAppUserList(MultipartFile excelFile) {
+        List<AppUserDto> list = appUserService.parseExcelToAppUserList(excelFile);
+        return success(list);
     }
 
 }

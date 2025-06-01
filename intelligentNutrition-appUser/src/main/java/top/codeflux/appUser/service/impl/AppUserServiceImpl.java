@@ -1,5 +1,6 @@
 package top.codeflux.appUser.service.impl;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
@@ -10,8 +11,12 @@ import java.util.List;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import jakarta.validation.constraints.NotNull;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.BeanUtils;
 import org.springframework.util.DigestUtils;
+import org.springframework.web.multipart.MultipartFile;
 import top.codeflux.appUser.domain.PhysicalExaminationPlan;
 import top.codeflux.appUser.domain.dto.AppUserLoginDto;
 import top.codeflux.appUser.domain.dto.AppUserDto;
@@ -173,6 +178,74 @@ public class AppUserServiceImpl extends ServiceImpl<AppUserMapper, AppUser> impl
         return getUserLoginVo(user);
     }
 
+    /**
+     * 解析Excel文件并转换为AppUser列表
+     *
+     * @param excelFile
+     * @return
+     */
+    @Override
+    public List<AppUserDto> parseExcelToAppUserList(MultipartFile excelFile) {
+        try {
+            XSSFWorkbook xssfWorkbook = new XSSFWorkbook(excelFile.getInputStream());
+            XSSFSheet sheet = xssfWorkbook.getSheet("template");
+            if (sheet == null) {
+                throw new BaseException(ResponseMessage.EXCEL_FORMAT_ERROR);
+            }
+            List<AppUserDto> list = new ArrayList<>();
+            // 获取最后一行的索引
+            int rowNum = sheet.getLastRowNum();
+            for (int i = 3; i <= rowNum; i++) {
+                // 从第四行开始 因为前三行是表头
+                // 获取行
+                XSSFRow row = sheet.getRow(i);
+                if (row == null) {
+                    continue;
+                }
+                // 构建user对象
+                AppUserDto user = new AppUserDto();
+                user.setStudentNumber(row.getCell(0).getStringCellValue());
+                user.setName(row.getCell(1).getStringCellValue());
+                if (row.getCell(2) != null) {
+                    user.setPassword(row.getCell(2).getStringCellValue());
+                } else {
+                    // 如果密码为空 则设置默认密码为学号
+                    user.setPassword(row.getCell(0).getStringCellValue());
+                }
+                if (row.getCell(3) != null) {
+                    user.setAvatar(row.getCell(3).getStringCellValue());
+                }
+                if (row.getCell(4) != null) {
+                    user.setHeight(row.getCell(4).getNumericCellValue());
+                }
+                if (row.getCell(5) != null) {
+                    user.setWeight(row.getCell(5).getNumericCellValue());
+                }
+                if (row.getCell(6) != null) {
+                    // 设置过敏源
+                    String[] s = row.getCell(6).getStringCellValue().split(",");
+                    List<Allergen> allergenList = new ArrayList<>();
+                    for (String string : s) {
+                        allergenList.add(
+                                Allergen.builder()
+                                        .allergen(string.trim())
+                                        .studentNumber(user.getStudentNumber())
+                                        .createTime(LocalDateTime.now())
+                                        .build()
+                        );
+                    }
+                    user.setAllergenList(allergenList);
+                }
+
+                list.add(user);
+
+            }
+            xssfWorkbook.close();
+            return list;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
 
     /**
