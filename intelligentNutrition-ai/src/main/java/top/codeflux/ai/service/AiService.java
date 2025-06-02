@@ -5,6 +5,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.web.multipart.MultipartFile;
 import top.codeflux.ai.domain.dto.ChatPrompt;
 import top.codeflux.ai.domain.vo.FoodRecognitionResult;
+import top.codeflux.common.domain.AppUser;
 import top.codeflux.common.domain.DietaryRecord;
 
 /**
@@ -25,4 +26,10 @@ public interface AiService {
     FoodRecognitionResult getFoodInfo(Resource image);
 
     DietaryRecord fillDietaryRecord(DietaryRecord entity);
+
+    /**
+     * 计算运动消耗的卡路里
+     * @return 消耗的卡路里
+     */
+    double calculateSportCalorie(AppUser user, String sportName, double duration);
 }

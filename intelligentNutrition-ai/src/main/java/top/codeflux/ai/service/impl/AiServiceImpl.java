@@ -15,6 +15,7 @@ import top.codeflux.ai.domain.dto.ChatPrompt;
 import top.codeflux.ai.domain.vo.FoodRecognitionResult;
 import top.codeflux.ai.service.AiService;
 import top.codeflux.common.constant.ResponseMessage;
+import top.codeflux.common.domain.AppUser;
 import top.codeflux.common.domain.DietaryRecord;
 import top.codeflux.common.exception.base.BaseException;
 
@@ -132,4 +133,33 @@ public class AiServiceImpl implements AiService {
         }
         return entity;
     }
+
+    /**
+     * 计算运动消耗的卡路里
+     *
+     * @param user
+     * @param sportName
+     * @param duration
+     * @return 消耗的卡路里
+     */
+    @Override
+    public double calculateSportCalorie(AppUser user, String sportName, double duration) {
+        // 构建提示词
+        String prompt = String.format(
+                "请根据以下信息计算运动消耗的卡路里：\n" +
+                        "用户信息：体重 %.1f公斤，身高 %.1f厘米。\n" +
+                        "运动名称：%s，持续时间：%.1f分钟。\n" +
+                        "请只返回消耗的卡路里数值，不要包含任何单位或其他文字。",
+                user.getWeight(), user.getHeight(),
+                sportName, duration
+        );
+        // 调用AI进行分析
+        String res = chatClient.prompt(prompt).call().content();
+        if (res == null) {
+            return 0.0;
+        }
+        return Double.parseDouble(res);
+    }
+
+
 }

@@ -37,6 +37,7 @@ public class SportController extends BaseController {
      * @param sportRecord 运动记录
      * @return 操作结果
      */
+    @PostMapping
     public AjaxResult save(@RequestBody SportRecord sportRecord) {
         return success(sportRecordService.save(sportRecord));
     }
