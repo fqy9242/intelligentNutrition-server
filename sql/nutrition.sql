@@ -11,7 +11,7 @@
  Target Server Version : 90200 (9.2.0)
  File Encoding         : 65001
 
- Date: 31/05/2025 20:00:31
+ Date: 02/06/2025 21:50:42
 */
 
 SET NAMES utf8mb4;
@@ -27,7 +27,7 @@ CREATE TABLE `allergen`  (
   `allergen` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `create_time` datetime NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 10 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '过敏原' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 31 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '过敏原' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of allergen
@@ -53,7 +53,7 @@ CREATE TABLE `app_user`  (
   `update_time` datetime NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `uk_student_number`(`student_number` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = 'app注册用户' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 18 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = 'app注册用户' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of app_user
@@ -229,6 +229,29 @@ CREATE TABLE `physical_examination_plan`  (
 -- Records of physical_examination_plan
 -- ----------------------------
 INSERT INTO `physical_examination_plan` VALUES (1, '滴水城乐疗广场', '2025-06-11 20:34:12', '2025-05-26 20:34:27', '2025-05-26 20:34:30');
+
+-- ----------------------------
+-- Table structure for sport_record
+-- ----------------------------
+DROP TABLE IF EXISTS `sport_record`;
+CREATE TABLE `sport_record`  (
+  `id` int UNSIGNED NOT NULL AUTO_INCREMENT,
+  `student_number` varbinary(255) NOT NULL COMMENT '学号',
+  `sport_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '运动名/类型',
+  `duration` double NULL DEFAULT NULL COMMENT '运动时长/分钟',
+  `consume_calorie` decimal(8, 2) NULL DEFAULT NULL COMMENT '消耗卡路里',
+  `exercise_time` datetime NULL DEFAULT NULL COMMENT '运动时间',
+  `create_time` datetime NULL DEFAULT NULL COMMENT '录入时间',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户运动记录表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of sport_record
+-- ----------------------------
+INSERT INTO `sport_record` VALUES (1, 0x32333331303230313330323239, '跑步', 39, 325.00, '2025-06-02 17:25:00', '2025-06-02 17:32:37');
+INSERT INTO `sport_record` VALUES (2, 0x32333331303230313330323239, '快走', 1, 5.00, '2025-06-02 17:38:00', '2025-06-02 17:38:19');
+INSERT INTO `sport_record` VALUES (3, 0x32333331303230313330323239, '快走', 1, 6.00, '2025-06-02 17:38:00', '2025-06-02 17:38:45');
+INSERT INTO `sport_record` VALUES (4, 0x32333331303230313330323239, '慢跑', 120, 600.00, '2025-06-02 17:43:00', '2025-06-02 17:43:44');
 
 -- ----------------------------
 -- Table structure for sys_config
@@ -423,7 +446,7 @@ CREATE TABLE `sys_job_log`  (
   `exception_info` varchar(2000) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '异常信息',
   `create_time` datetime NULL DEFAULT NULL COMMENT '创建时间',
   PRIMARY KEY (`job_log_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '定时任务调度日志表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '定时任务调度日志表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of sys_job_log
@@ -446,7 +469,7 @@ CREATE TABLE `sys_logininfor`  (
   PRIMARY KEY (`info_id`) USING BTREE,
   INDEX `idx_sys_logininfor_s`(`status` ASC) USING BTREE,
   INDEX `idx_sys_logininfor_lt`(`login_time` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 120 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '系统访问记录' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 124 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '系统访问记录' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of sys_logininfor
@@ -471,6 +494,10 @@ INSERT INTO `sys_logininfor` VALUES (116, 'admin', '127.0.0.1', '内网IP', 'Chr
 INSERT INTO `sys_logininfor` VALUES (117, 'admin', '127.0.0.1', '内网IP', 'Chrome 13', 'Windows 10', '0', '登录成功', '2025-05-27 20:33:39');
 INSERT INTO `sys_logininfor` VALUES (118, 'admin', '127.0.0.1', '内网IP', 'Chrome 13', 'Windows 10', '1', '验证码已失效', '2025-05-27 21:34:08');
 INSERT INTO `sys_logininfor` VALUES (119, 'admin', '127.0.0.1', '内网IP', 'Chrome 13', 'Windows 10', '0', '登录成功', '2025-05-27 21:34:58');
+INSERT INTO `sys_logininfor` VALUES (120, 'admin', '127.0.0.1', '内网IP', 'Chrome 13', 'Windows 10', '0', '登录成功', '2025-06-01 11:54:48');
+INSERT INTO `sys_logininfor` VALUES (121, 'admin', '127.0.0.1', '内网IP', 'Chrome 13', 'Windows 10', '0', '登录成功', '2025-06-01 16:26:59');
+INSERT INTO `sys_logininfor` VALUES (122, 'admin', '127.0.0.1', '内网IP', 'Chrome 13', 'Windows 10', '0', '登录成功', '2025-06-01 17:55:28');
+INSERT INTO `sys_logininfor` VALUES (123, 'admin', '127.0.0.1', '内网IP', 'Chrome 13', 'Windows 10', '0', '登录成功', '2025-06-01 21:34:04');
 
 -- ----------------------------
 -- Table structure for sys_menu
@@ -644,7 +671,7 @@ CREATE TABLE `sys_oper_log`  (
   INDEX `idx_sys_oper_log_bt`(`business_type` ASC) USING BTREE,
   INDEX `idx_sys_oper_log_s`(`status` ASC) USING BTREE,
   INDEX `idx_sys_oper_log_ot`(`oper_time` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 134 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '操作日志记录' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 148 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '操作日志记录' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of sys_oper_log
@@ -683,6 +710,20 @@ INSERT INTO `sys_oper_log` VALUES (130, 'app注册用户', 1, 'top.codeflux.appU
 INSERT INTO `sys_oper_log` VALUES (131, 'app注册用户', 1, 'top.codeflux.appUser.controller.AppUserController.add()', 'POST', 1, 'admin', '研发部门', '/intelligentNutrition-appUser/appUser', '127.0.0.1', '内网IP', '{\"allergenList\":[{\"allergen\":\"杜甫\",\"createTime\":\"2025-05-26 16:43:30.543672900\",\"studentNumber\":\"2333311220111\"}],\"avatar\":\"/profile/upload/2025/05/26/red_oil_20250526163950A001.jpg\",\"height\":190.0,\"name\":\"李白\",\"studentNumber\":\"2333311220111\",\"weight\":50.0}', '{\"msg\":\"操作成功\",\"code\":200}', 0, NULL, '2025-05-26 16:43:30', 93);
 INSERT INTO `sys_oper_log` VALUES (132, 'app注册用户', 5, 'top.codeflux.appUser.controller.AppUserController.export()', 'POST', 1, 'admin', '研发部门', '/intelligentNutrition-appUser/appUser/export', '127.0.0.1', '内网IP', '{\"pageSize\":\"10\",\"pageNum\":\"1\"}', NULL, 0, NULL, '2025-05-26 16:45:51', 1330);
 INSERT INTO `sys_oper_log` VALUES (133, 'app注册用户', 5, 'top.codeflux.appUser.controller.AppUserController.export()', 'POST', 1, 'admin', '研发部门', '/intelligentNutrition-appUser/appUser/export', '127.0.0.1', '内网IP', '{\"pageSize\":\"10\",\"pageNum\":\"1\"}', NULL, 0, NULL, '2025-05-26 16:45:53', 191);
+INSERT INTO `sys_oper_log` VALUES (134, 'app注册用户', 1, 'top.codeflux.appUser.controller.AppUserController.add()', 'POST', 1, 'admin', '研发部门', '/intelligentNutrition-appUser/appUser', '127.0.0.1', '内网IP', '{\"allergenList\":[{\"allergen\":\"苹果\",\"createTime\":\"2025-06-01 18:02:01.787325\",\"studentNumber\":\"2331111111112\"},{\"allergen\":\"李白\",\"createTime\":\"2025-06-01 18:02:01.787325\",\"studentNumber\":\"2331111111112\"}],\"height\":190.0,\"name\":\"杜甫\",\"studentNumber\":\"2331111111112\",\"weight\":120.0}', '{\"msg\":\"操作成功\",\"code\":200}', 0, NULL, '2025-06-01 18:02:01', 102);
+INSERT INTO `sys_oper_log` VALUES (135, 'app注册用户', 3, 'top.codeflux.appUser.controller.AppUserController.remove()', 'DELETE', 1, 'admin', '研发部门', '/intelligentNutrition-appUser/appUser/3', '127.0.0.1', '内网IP', '[\"3\"]', '{\"msg\":\"操作成功\",\"code\":200}', 0, NULL, '2025-06-01 18:25:03', 126);
+INSERT INTO `sys_oper_log` VALUES (136, 'app注册用户', 1, 'top.codeflux.appUser.controller.AppUserController.add()', 'POST', 1, 'admin', '研发部门', '/intelligentNutrition-appUser/appUser', '127.0.0.1', '内网IP', '{\"allergenList\":[{\"allergen\":\"\",\"createTime\":\"2025-06-01 18:49:39.345442800\",\"studentNumber\":\"2331111111111\"}],\"height\":120.0,\"name\":\"李白\",\"studentNumber\":\"2331111111111\",\"weight\":150.0}', '{\"msg\":\"操作成功\",\"code\":200}', 0, NULL, '2025-06-01 18:49:39', 51);
+INSERT INTO `sys_oper_log` VALUES (137, 'app注册用户', 1, 'top.codeflux.appUser.controller.AppUserController.add()', 'POST', 1, 'admin', '研发部门', '/intelligentNutrition-appUser/appUser', '127.0.0.1', '内网IP', '{\"allergenList\":[{\"allergen\":\"苹果\",\"createTime\":\"2025-06-01 18:49:39.327317600\",\"studentNumber\":\"2331111111112\"},{\"allergen\":\"李白\",\"createTime\":\"2025-06-01 18:49:39.327317600\",\"studentNumber\":\"2331111111112\"}],\"height\":190.0,\"name\":\"杜甫\",\"studentNumber\":\"2331111111112\",\"weight\":120.0}', '{\"msg\":\"操作成功\",\"code\":200}', 0, NULL, '2025-06-01 18:49:39', 49);
+INSERT INTO `sys_oper_log` VALUES (138, 'app注册用户', 3, 'top.codeflux.appUser.controller.AppUserController.remove()', 'DELETE', 1, 'admin', '研发部门', '/intelligentNutrition-appUser/appUser/4,5', '127.0.0.1', '内网IP', '[\"4\",\"5\"]', '{\"msg\":\"操作成功\",\"code\":200}', 0, NULL, '2025-06-01 18:54:38', 78);
+INSERT INTO `sys_oper_log` VALUES (139, 'app注册用户', 3, 'top.codeflux.appUser.controller.AppUserController.remove()', 'DELETE', 1, 'admin', '研发部门', '/intelligentNutrition-appUser/appUser/6,7', '127.0.0.1', '内网IP', '[\"6\",\"7\"]', '{\"msg\":\"操作成功\",\"code\":200}', 0, NULL, '2025-06-01 19:09:53', 52);
+INSERT INTO `sys_oper_log` VALUES (140, 'app注册用户', 3, 'top.codeflux.appUser.controller.AppUserController.remove()', 'DELETE', 1, 'admin', '研发部门', '/intelligentNutrition-appUser/appUser/8,9', '127.0.0.1', '内网IP', '[\"8\",\"9\"]', '{\"msg\":\"操作成功\",\"code\":200}', 0, NULL, '2025-06-01 19:22:28', 143);
+INSERT INTO `sys_oper_log` VALUES (141, 'app注册用户', 3, 'top.codeflux.appUser.controller.AppUserController.remove()', 'DELETE', 1, 'admin', '研发部门', '/intelligentNutrition-appUser/appUser/10,11', '127.0.0.1', '内网IP', '[\"10\",\"11\"]', '{\"msg\":\"操作成功\",\"code\":200}', 0, NULL, '2025-06-01 19:23:04', 24);
+INSERT INTO `sys_oper_log` VALUES (142, 'app注册用户', 3, 'top.codeflux.appUser.controller.AppUserController.remove()', 'DELETE', 1, 'admin', '研发部门', '/intelligentNutrition-appUser/appUser/13,12', '127.0.0.1', '内网IP', '[\"13\",\"12\"]', '{\"msg\":\"操作成功\",\"code\":200}', 0, NULL, '2025-06-01 19:23:36', 26);
+INSERT INTO `sys_oper_log` VALUES (143, 'app注册用户', 3, 'top.codeflux.appUser.controller.AppUserController.remove()', 'DELETE', 1, 'admin', '研发部门', '/intelligentNutrition-appUser/appUser/15,14', '127.0.0.1', '内网IP', '[\"15\",\"14\"]', NULL, 1, '\r\n### Error querying database.  Cause: java.sql.SQLSyntaxErrorException: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near \'[Ljava.lang.String;@1a770fa1)\' at line 1\r\n### The error may exist in top/codeflux/appUser/mapper/AppUserMapper.java (best guess)\r\n### The error may involve top.codeflux.appUser.mapper.AppUserMapper.selectStudentNumberByIds-Inline\r\n### The error occurred while setting parameters\r\n### SQL: select student_number from app_user where id in ([Ljava.lang.String;@1a770fa1)\r\n### Cause: java.sql.SQLSyntaxErrorException: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near \'[Ljava.lang.String;@1a770fa1)\' at line 1\n; bad SQL grammar []', '2025-06-01 19:31:06', 276);
+INSERT INTO `sys_oper_log` VALUES (144, 'app注册用户', 3, 'top.codeflux.appUser.controller.AppUserController.remove()', 'DELETE', 1, 'admin', '研发部门', '/intelligentNutrition-appUser/appUser/15,14', '127.0.0.1', '内网IP', '[\"15\",\"14\"]', NULL, 1, '\r\n### Error querying database.  Cause: java.sql.SQLSyntaxErrorException: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near \'[Ljava.lang.String;@257501e5)\' at line 1\r\n### The error may exist in top/codeflux/appUser/mapper/AppUserMapper.java (best guess)\r\n### The error may involve top.codeflux.appUser.mapper.AppUserMapper.selectStudentNumberByIds-Inline\r\n### The error occurred while setting parameters\r\n### SQL: select student_number from app_user where id in ([Ljava.lang.String;@257501e5)\r\n### Cause: java.sql.SQLSyntaxErrorException: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near \'[Ljava.lang.String;@257501e5)\' at line 1\n; bad SQL grammar []', '2025-06-01 19:33:01', 121);
+INSERT INTO `sys_oper_log` VALUES (145, 'app注册用户', 3, 'top.codeflux.appUser.controller.AppUserController.remove()', 'DELETE', 1, 'admin', '研发部门', '/intelligentNutrition-appUser/appUser/15,14', '127.0.0.1', '内网IP', '[\"15\",\"14\"]', '{\"msg\":\"操作成功\",\"code\":200}', 0, NULL, '2025-06-01 19:36:41', 90);
+INSERT INTO `sys_oper_log` VALUES (146, 'app注册用户', 3, 'top.codeflux.appUser.controller.AppUserController.remove()', 'DELETE', 1, 'admin', '研发部门', '/intelligentNutrition-appUser/appUser/16,17', '127.0.0.1', '内网IP', '[\"16\",\"17\"]', '{\"msg\":\"操作成功\",\"code\":200}', 0, NULL, '2025-06-01 19:37:01', 38);
+INSERT INTO `sys_oper_log` VALUES (147, 'app注册用户', 5, 'top.codeflux.appUser.controller.AppUserController.export()', 'POST', 1, 'admin', '研发部门', '/intelligentNutrition-appUser/appUser/export', '127.0.0.1', '内网IP', '{\"pageSize\":\"10\",\"pageNum\":\"1\"}', NULL, 0, NULL, '2025-06-01 21:34:17', 441);
 
 -- ----------------------------
 -- Table structure for sys_post
@@ -884,7 +925,7 @@ CREATE TABLE `sys_user`  (
 -- ----------------------------
 -- Records of sys_user
 -- ----------------------------
-INSERT INTO `sys_user` VALUES (1, 103, 'admin', '管理员', '00', '59605904@qq.com', '19999999999', '0', '', '$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2', '0', '0', '127.0.0.1', '2025-05-27 21:34:58', 'admin', '2025-05-15 15:11:20', '', '2025-05-27 21:34:58', '管理员');
+INSERT INTO `sys_user` VALUES (1, 103, 'admin', '管理员', '00', '59605904@qq.com', '19999999999', '0', '', '$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2', '0', '0', '127.0.0.1', '2025-06-01 21:34:04', 'admin', '2025-05-15 15:11:20', '', '2025-06-01 21:34:04', '管理员');
 INSERT INTO `sys_user` VALUES (2, 105, 'ry', '若依', '00', 'ry@qq.com', '15666666666', '1', '', '$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2', '0', '0', '127.0.0.1', '2025-05-15 15:11:20', 'admin', '2025-05-15 15:11:20', '', NULL, '测试员');
 
 -- ----------------------------

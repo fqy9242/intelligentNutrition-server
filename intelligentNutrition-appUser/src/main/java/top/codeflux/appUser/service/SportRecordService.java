@@ -18,4 +18,11 @@ public interface SportRecordService extends IService<SportRecord> {
      * @return 运动记录列表
      */
     List<SportRecord> getByStudentNumber(String studentNumber, Integer onlyToday);
+
+    /**
+     * 获取本周运动次数
+     * @param studentNumber
+     * @return
+     */
+    long getTotalThisWeekSport(String studentNumber);
 }

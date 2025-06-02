@@ -41,4 +41,13 @@ public class SportController extends BaseController {
     public AjaxResult save(@RequestBody SportRecord sportRecord) {
         return success(sportRecordService.save(sportRecord));
     }
+    /**
+     * 获取本周运动次数
+     * @param studentNumber
+     * @return
+     */
+    @GetMapping("/totalThisWeekSport/{studentNumber}")
+    public AjaxResult getTotalThisWeekSport(@PathVariable String studentNumber) {
+        return success(sportRecordService.getTotalThisWeekSport(studentNumber));
+    }
 }

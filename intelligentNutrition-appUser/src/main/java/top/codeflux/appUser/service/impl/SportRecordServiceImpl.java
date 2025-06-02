@@ -12,6 +12,7 @@ import top.codeflux.common.constant.ResponseMessage;
 import top.codeflux.common.domain.AppUser;
 import top.codeflux.common.exception.base.BaseException;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
@@ -43,6 +44,27 @@ public class SportRecordServiceImpl extends ServiceImpl<SportRecordMapper, Sport
         }
         return query.list();
     }
+
+    /**
+     * 获取本周运动次数
+     *
+     * @param studentNumber
+     * @return
+     */
+    @Override
+    public long getTotalThisWeekSport(String studentNumber) {
+        if (studentNumber == null || studentNumber.isEmpty()) {
+            throw new BaseException(ResponseMessage.STUDENT_NUMBER_NOT_NULL);
+        }
+        // 获取今天是星期几
+        int weekValue = LocalDate.now().getDayOfWeek().getValue();
+        Long count = lambdaQuery().eq(SportRecord::getStudentNumber, studentNumber)
+                .ge(SportRecord::getExerciseTime, LocalDate.now().minusDays(weekValue - 1))
+                .le(SportRecord::getExerciseTime, LocalDate.now().plusDays(1))
+                .count();
+        return count == null ? 0 : count;
+    }
+
     /**
      * 保存运动记录
      *
