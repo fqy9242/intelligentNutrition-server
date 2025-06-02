@@ -1,13 +1,16 @@
 package top.codeflux.appUser.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import top.codeflux.ai.service.AiService;
 import top.codeflux.appUser.domain.SportRecord;
 import top.codeflux.appUser.mapper.SportRecordMapper;
 import top.codeflux.appUser.service.SportRecordService;
 import top.codeflux.common.constant.ResponseMessage;
 import top.codeflux.common.exception.base.BaseException;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -15,7 +18,9 @@ import java.util.List;
  * @date 2025/6/2
  */
 @Service
+@RequiredArgsConstructor
 public class SportRecordServiceImpl extends ServiceImpl<SportRecordMapper, SportRecord> implements SportRecordService {
+    private final AiService aiService;
 
     /**
      * 根据学生学号查询运动记录
@@ -46,7 +51,13 @@ public class SportRecordServiceImpl extends ServiceImpl<SportRecordMapper, Sport
         if (entity.getStudentNumber() == null || entity.getStudentNumber().isEmpty()) {
             throw new BaseException(ResponseMessage.STUDENT_NUMBER_NOT_NULL);
         }
-        // TODO 完成这个方法
+        entity.setCreateTime(new Date().toString());
+        if (entity.getConsumeCalorie() == null) {
+            // TODO 调用ai计算
+            // 如果消耗卡路里为空，则调用AI服务计算
+//            double calorie = aiService.calculateSportCalorie();
+//            entity.setConsumeCalorie(calorie);
+        }
         return super.save(entity);
     }
 }

@@ -21,7 +21,7 @@ import java.util.List;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class DietaryRecordServiceImpl extends ServiceImpl<DietaryRecordMapper, DietaryRecord> implements DietaryRecordService {
+public class DietaryRecordServiceImpl extends ServiceImpl<DietaryRecordMapper,  DietaryRecord> implements DietaryRecordService {
     private final AiService aiService;
     private final DietaryRecordMapper dietaryRecordMapper;
     @Override
@@ -73,6 +73,20 @@ public class DietaryRecordServiceImpl extends ServiceImpl<DietaryRecordMapper, D
             vo.setOther(getMeal(other));
         }
         return vo;
+    }
+
+    /**
+     * 根据学生学号查询饮食记录
+     *
+     * @param studentNumber
+     * @return
+     */
+    @Override
+    public List<DietaryRecord> getByStudentNumber(String studentNumber) {
+        return lambdaQuery()
+                .eq(DietaryRecord::getStudentNumber, studentNumber)
+                .orderByDesc(DietaryRecord::getCreateTime)
+                .list();
     }
 
 

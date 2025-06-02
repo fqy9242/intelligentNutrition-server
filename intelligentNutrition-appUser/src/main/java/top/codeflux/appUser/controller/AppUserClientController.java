@@ -72,10 +72,15 @@ public class AppUserClientController extends BaseController {
         return success();
     }
     @GetMapping("/dietaryRecord/{studentNumber}")
-    @Anonymous
-    public AjaxResult saveDietaryRecord(@PathVariable String studentNumber) {
-        TodayDietaryRecordVo vo  = dietaryRecordService.getTodayByStudentNumber(studentNumber);
-        return success(vo);
+//    @Anonymous
+    public AjaxResult saveDietaryRecord(@PathVariable String studentNumber, Integer onlyToday) {
+        if (onlyToday != null && onlyToday == 1) {
+            TodayDietaryRecordVo vo  = dietaryRecordService.getTodayByStudentNumber(studentNumber);
+            return success(vo);
+        } else {
+            List<DietaryRecord> list = dietaryRecordService.getByStudentNumber(studentNumber);
+            return success(list);
+        }
     }
     @GetMapping("/drinkingWaterRecord")
     public AjaxResult drinkingWaterRecord(String studentNumber,  @RequestParam(value = "onlyToday", required = false) Integer onlyToday) {
