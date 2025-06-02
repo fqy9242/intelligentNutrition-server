@@ -5,6 +5,7 @@ import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import top.codeflux.appUser.domain.DrinkingWaterRecord;
+import top.codeflux.appUser.domain.SportRecord;
 import top.codeflux.appUser.domain.vo.TodayDietaryRecordVo;
 import top.codeflux.appUser.service.*;
 import top.codeflux.common.domain.DietaryRecord;
@@ -14,6 +15,8 @@ import top.codeflux.appUser.domain.vo.AppUserLoginVo;
 import top.codeflux.common.annotation.Anonymous;
 import top.codeflux.common.core.controller.BaseController;
 import top.codeflux.common.core.domain.AjaxResult;
+
+import java.util.List;
 
 /**
  * @author qht
@@ -32,6 +35,7 @@ public class AppUserClientController extends BaseController {
     private DietaryRecordService dietaryRecordService;
     @Autowired
     private DrinkingWaterRecordService drinkingWaterRecordService;
+
 
     // 用户登录
     @Anonymous
@@ -82,4 +86,5 @@ public class AppUserClientController extends BaseController {
         drinkingWaterRecordService.save(drinkingWaterRecord);
         return success();
     }
+
 }
