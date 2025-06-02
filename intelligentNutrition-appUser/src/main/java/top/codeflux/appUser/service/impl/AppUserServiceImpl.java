@@ -15,16 +15,24 @@ import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.BeanUtils;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.util.DigestUtils;
 import org.springframework.web.multipart.MultipartFile;
+import top.codeflux.ai.service.AiService;
 import top.codeflux.appUser.domain.PhysicalExaminationPlan;
+import top.codeflux.appUser.domain.SportRecord;
 import top.codeflux.appUser.domain.dto.AppUserLoginDto;
 import top.codeflux.appUser.domain.dto.AppUserDto;
 import top.codeflux.appUser.domain.vo.AppUserLoginVo;
 import top.codeflux.appUser.domain.vo.AppUserVo;
+import top.codeflux.appUser.service.DietaryRecordService;
+import top.codeflux.appUser.service.PhysicalExaminationPlanService;
+import top.codeflux.appUser.service.SportRecordService;
 import top.codeflux.appUser.utils.CommonUtil;
+import top.codeflux.common.constant.OptionConstants;
 import top.codeflux.common.constant.ResponseMessage;
 import top.codeflux.common.core.domain.model.LoginUser;
+import top.codeflux.common.domain.DietaryRecord;
 import top.codeflux.common.exception.base.BaseException;
 import top.codeflux.common.utils.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,6 +61,13 @@ public class AppUserServiceImpl extends ServiceImpl<AppUserMapper, AppUser> impl
     private AppUserMapper appUserMapper;
     @Autowired
     private TokenService tokenService;
+    @Autowired
+    private AiService aiService;
+    @Autowired
+    @Lazy
+    private SportRecordService sportRecordService;
+    @Autowired
+    private DietaryRecordService dietaryRecordService;
 
     /**
      * 查询app注册用户
@@ -288,6 +303,24 @@ public class AppUserServiceImpl extends ServiceImpl<AppUserMapper, AppUser> impl
         });
         saveBatch(userList);
         return userList.size();
+    }
+
+    /**
+     * 获取今日推荐摄入卡路里
+     *
+     * @param studentNumber
+     * @return
+     */
+    @Override
+    public double todayRecommendCalories(String studentNumber) {
+        // 根据学号查询用户信息
+        AppUser user = lambdaQuery().eq(AppUser::getStudentNumber, studentNumber).one();
+        // 根据学号查询运动记录信息
+        List<SportRecord> sportRecords = sportRecordService.getByStudentNumber(studentNumber, OptionConstants.FALSE);
+        // 根据学号查询饮食记录信息
+        List<DietaryRecord> dietaryRecords = dietaryRecordService.getByStudentNumber(studentNumber);
+        // 拿数据喂给ai 分析今日推荐摄入卡路里
+        return aiService.getTodayRecommendCalories(user.toString(),dietaryRecords.toString(), sportRecords.toString());
     }
 
 

@@ -2,7 +2,6 @@ package top.codeflux.ai.service;
 
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.core.io.Resource;
-import org.springframework.web.multipart.MultipartFile;
 import top.codeflux.ai.domain.dto.ChatPrompt;
 import top.codeflux.ai.domain.vo.FoodRecognitionResult;
 import top.codeflux.common.domain.AppUser;
@@ -32,4 +31,12 @@ public interface AiService {
      * @return 消耗的卡路里
      */
     double calculateSportCalorie(AppUser user, String sportName, double duration);
+    /**
+     * 获取今日推荐的卡路里摄入量
+     * @param userInfo 用户信息
+     * @param dietaryRecordInfo 饮食记录信息
+     * @param sportRecordInfo 运动记录信息
+     * @return 今日推荐的卡路里摄入量
+     */
+    double getTodayRecommendCalories(String userInfo, String dietaryRecordInfo, String sportRecordInfo);
 }

@@ -161,5 +161,28 @@ public class AiServiceImpl implements AiService {
         return Double.parseDouble(res);
     }
 
+    /**
+     * 获取今日推荐的卡路里摄入量
+     *
+     * @param userInfo          用户信息
+     * @param dietaryRecordInfo 饮食记录信息
+     * @param sportRecordInfo   运动记录信息
+     * @return 今日推荐的卡路里摄入量
+     */
+    @Override
+    public double getTodayRecommendCalories(String userInfo, String dietaryRecordInfo, String sportRecordInfo) {
+        // 构建提示词
+        String prompt = String.format(
+                "请根据以下信息计算今日推荐的卡路里摄入量：\n" +
+                        "用户信息：%s\n" +
+                        "饮食记录信息：%s\n" +
+                        "运动记录信息：%s\n" +
+                        "请只返回推荐的卡路里数值，不要包含任何单位或其他文字。",
+                userInfo, dietaryRecordInfo, sportRecordInfo
+        );
+        String content = chatClient.prompt(prompt).call().content();
+        return Double.parseDouble(content);
+    }
+
 
 }

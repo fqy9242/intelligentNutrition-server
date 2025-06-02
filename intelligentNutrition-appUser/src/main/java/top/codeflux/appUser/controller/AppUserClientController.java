@@ -92,4 +92,16 @@ public class AppUserClientController extends BaseController {
         return success();
     }
 
+    /**
+     * 今日推荐摄入卡路里
+     * @param studentNumber
+     * @return
+     */
+    @GetMapping("/todayRecommendCalories/{studentNumber}")
+//    @Anonymous
+    public AjaxResult todayRecommendCalories(@PathVariable String studentNumber) {
+        double calories = userService.todayRecommendCalories(studentNumber);
+        return success(calories);
+    }
+
 }

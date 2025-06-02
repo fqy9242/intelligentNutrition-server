@@ -87,4 +87,11 @@ public interface IAppUserService extends IService<AppUser> {
      * @return
      */
     int insertAppUserBatch(List<AppUserDto> dtoList);
+
+    /**
+     * 获取今日推荐摄入卡路里
+     * @param studentNumber
+     * @return
+     */
+    double todayRecommendCalories(String studentNumber);
 }

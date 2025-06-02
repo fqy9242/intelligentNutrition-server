@@ -29,4 +29,16 @@ public class SportRecord {
     private LocalDateTime exerciseTime;
     // 创建时间
     private LocalDateTime createTime;
+    @Override
+    public String toString() {
+        return "SportRecord{" +
+                "id=" + id +
+                ", studentNumber='" + studentNumber + '\'' +
+                ", sportName='" + sportName + '\'' +
+                ", duration=" + duration +
+                ", consumeCalorie=" + consumeCalorie +
+                ", exerciseTime=" + exerciseTime +
+                ", createTime=" + createTime +
+                '}';
+    }
 }
