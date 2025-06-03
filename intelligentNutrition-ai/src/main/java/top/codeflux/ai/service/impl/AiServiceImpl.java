@@ -204,7 +204,7 @@ public class AiServiceImpl implements AiService {
                 "用户饮食记录: %s \n" +
                 "这是个例子:增加蔬菜摄入量,控制油炸食品摄入,保持适量运动 \n" +
                 "请严格返回三条建议,每条建议使用英文逗号隔开,每条建议不要超过十五个字。\n" +
-                "不要返回多于内容！谢谢。", studentInfo, dietaryRecordInfo, sportRecordInfo);
+                "不要返回多于内容！谢谢。", studentInfo, sportRecordInfo, dietaryRecordInfo);
         // 调用大模型
         String res = chatClient.prompt(prompt).call().content();
 //        log.info(res);
