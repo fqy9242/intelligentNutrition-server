@@ -2,6 +2,7 @@ package top.codeflux.ai.service.impl;
 
 import com.alibaba.cloud.ai.dashscope.chat.DashScopeChatOptions;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.http.config.MessageConstraints;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.messages.UserMessage;
@@ -20,6 +21,7 @@ import top.codeflux.common.domain.DietaryRecord;
 import top.codeflux.common.exception.base.BaseException;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -28,6 +30,7 @@ import java.util.List;
  */
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class AiServiceImpl implements AiService {
     private final ChatClient chatClient;
 
@@ -184,5 +187,27 @@ public class AiServiceImpl implements AiService {
         return Double.parseDouble(content);
     }
 
-
+    /**
+     * 获取三条健康建议
+     *
+     * @param studentInfo       学生信息
+     * @param dietaryRecordInfo 饮食信息
+     * @param sportRecordInfo   运动记录信息
+     * @return 三条健康建议
+     */
+    @Override
+    public List<String> getHealthAdvise(String studentInfo, String dietaryRecordInfo, String sportRecordInfo) {
+        // 构建提示词
+        String prompt = String.format("请根据以下信息给出三条健康建议: \n" +
+                "用户信息:%s \n" +
+                "用户运动记录:%s \n" +
+                "用户饮食记录: %s \n" +
+                "这是个例子:增加蔬菜摄入量,控制油炸食品摄入,保持适量运动 \n" +
+                "请严格返回三条建议,每条建议使用英文逗号隔开,每条建议不要超过十五个字。\n" +
+                "不要返回多于内容！谢谢。", studentInfo, dietaryRecordInfo, sportRecordInfo);
+        // 调用大模型
+        String res = chatClient.prompt(prompt).call().content();
+//        log.info(res);
+        return (res != null && !res.isEmpty()) ? List.of(res.split(",")) : new ArrayList<>();
+    }
 }

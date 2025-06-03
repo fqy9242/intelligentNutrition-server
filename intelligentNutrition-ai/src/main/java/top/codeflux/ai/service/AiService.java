@@ -7,6 +7,8 @@ import top.codeflux.ai.domain.vo.FoodRecognitionResult;
 import top.codeflux.common.domain.AppUser;
 import top.codeflux.common.domain.DietaryRecord;
 
+import java.util.List;
+
 /**
  * @author qht
  * @date 2025/5/17
@@ -39,4 +41,13 @@ public interface AiService {
      * @return 今日推荐的卡路里摄入量
      */
     double getTodayRecommendCalories(String userInfo, String dietaryRecordInfo, String sportRecordInfo);
+
+    /**
+     * 获取三条健康建议
+     * @param studentInfo 学生信息
+     * @param dietaryRecordInfo 饮食信息
+     * @param sportRecordInfo 运动记录信息
+     * @return 三条健康建议
+     */
+    List<String> getHealthAdvise(String studentInfo, String dietaryRecordInfo, String sportRecordInfo);
 }

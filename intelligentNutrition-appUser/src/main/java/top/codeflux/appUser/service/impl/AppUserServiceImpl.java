@@ -55,8 +55,7 @@ import top.codeflux.framework.web.service.TokenService;
  * @date 2025-05-16
  */
 @Service
-public class AppUserServiceImpl extends ServiceImpl<AppUserMapper, AppUser> implements IAppUserService
-{
+public class AppUserServiceImpl extends ServiceImpl<AppUserMapper, AppUser> implements IAppUserService {
     @Autowired
     private AppUserMapper appUserMapper;
     @Autowired
@@ -76,8 +75,7 @@ public class AppUserServiceImpl extends ServiceImpl<AppUserMapper, AppUser> impl
      * @return app注册用户
      */
     @Override
-    public AppUserVo selectAppUserById(String id)
-    {
+    public AppUserVo selectAppUserById(String id) {
         // 获取数据库实体对象
         AppUser appUser = appUserMapper.selectAppUserById(id);
         // 查询用户过敏源
@@ -322,6 +320,27 @@ public class AppUserServiceImpl extends ServiceImpl<AppUserMapper, AppUser> impl
         // 拿数据喂给ai 分析今日推荐摄入卡路里
         return aiService.getTodayRecommendCalories(user.toString(),dietaryRecords.toString(), sportRecords.toString());
     }
+
+    /**
+     * 获取健康建议
+     * TODO 1. 优化代码 将公共部分抽取出去 2025-6-3  2.不要获取全部记录 而是最近xx条的记录
+     * @param studentNumber
+     * @return
+     */
+    @Override
+    public List<String> getHealthAdvise(String studentNumber) {
+        if (studentNumber == null) {throw new BaseException(ResponseMessage.STUDENT_NUMBER_NOT_NULL);}
+        // 根据学号查询用户信息
+        AppUser user = lambdaQuery().eq(AppUser::getStudentNumber, studentNumber).one();
+        // 根据学号查询运动记录信息
+        List<SportRecord> sportRecords = sportRecordService.getByStudentNumber(studentNumber, OptionConstants.FALSE);
+        // 根据学号查询饮食记录信息
+        List<DietaryRecord> dietaryRecords = dietaryRecordService.getByStudentNumber(studentNumber);
+        // 拿数据喂给ai 分析今日推荐摄入卡路里
+        return aiService.getHealthAdvise(user.toString(),dietaryRecords.toString(), sportRecords.toString());
+    }
+
+
 
 
     /**

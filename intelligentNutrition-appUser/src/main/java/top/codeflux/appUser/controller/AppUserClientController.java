@@ -1,6 +1,7 @@
 package top.codeflux.appUser.controller;
 
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -24,6 +25,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/client/user")
+@Slf4j
 public class AppUserClientController extends BaseController {
     @Autowired
     private IAppUserService userService;
@@ -35,7 +37,6 @@ public class AppUserClientController extends BaseController {
     private DietaryRecordService dietaryRecordService;
     @Autowired
     private DrinkingWaterRecordService drinkingWaterRecordService;
-
 
     // 用户登录
     @Anonymous
@@ -102,6 +103,17 @@ public class AppUserClientController extends BaseController {
     public AjaxResult todayRecommendCalories(@PathVariable String studentNumber) {
         double calories = userService.todayRecommendCalories(studentNumber);
         return success(calories);
+    }
+
+    /**
+     *  获取健康建议
+     * @return
+     */
+    @Anonymous
+    @GetMapping("/healthAdvise/{studentNumber}")
+    public AjaxResult healthAdvise(@PathVariable String studentNumber) {
+        List<String> adviseList = userService.getHealthAdvise(studentNumber);
+        return success(adviseList);
     }
 
 

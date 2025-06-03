@@ -94,4 +94,11 @@ public interface IAppUserService extends IService<AppUser> {
      * @return
      */
     double todayRecommendCalories(String studentNumber);
+
+    /**
+     *  获取健康建议
+     * @param studentNumber
+     * @return
+     */
+    List<String> getHealthAdvise(String studentNumber);
 }
