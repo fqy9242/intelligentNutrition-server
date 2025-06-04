@@ -232,6 +232,12 @@
                 <artifactId>mybatis-plus-jsqlparser</artifactId>
                 <version>${mybatis-plus-jsqlparser.version}</version>
             </dependency>
+            <!--分析模块-->
+            <dependency>
+                <groupId>top.codeflux</groupId>
+                <artifactId>intelligentNutrition-analysis</artifactId>
+                <version>${intelligentNutrition.version}</version>
+            </dependency>
 
         </dependencies>
     </dependencyManagement>
@@ -245,6 +251,7 @@
         <module>intelligentNutrition-common</module>
         <module>intelligentNutrition-appUser</module>
         <module>intelligentNutrition-ai</module>
+        <module>intelligentNutrition-analysis</module>
     </modules>
     <packaging>pom</packaging>
 

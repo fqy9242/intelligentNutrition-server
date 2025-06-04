@@ -137,7 +137,7 @@ public class AppUserServiceImpl extends ServiceImpl<AppUserMapper, AppUser> impl
         // 创建一个实体对象 并将dto的属性拷贝过去
         AppUser user = new AppUser();
         BeanUtils.copyProperties(dto, user);
-        user.setUpdateTime(DateUtils.getNowDate());
+        user.setUpdateTime(LocalDateTime.now());
         // 调用接口更新用户表
         appUserMapper.updateAppUser(user);
         // 先删除该用户所有的过敏源信息

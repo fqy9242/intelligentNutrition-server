@@ -63,6 +63,11 @@
             <groupId>top.codeflux</groupId>
             <artifactId>intelligentNutrition-ai</artifactId>
         </dependency>
+        <!--分析模块-->
+        <dependency>
+            <groupId>top.codeflux</groupId>
+            <artifactId>intelligentNutrition-analysis</artifactId>
+        </dependency>
 
 
     </dependencies>

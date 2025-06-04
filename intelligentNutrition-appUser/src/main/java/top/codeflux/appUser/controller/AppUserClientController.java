@@ -116,6 +116,26 @@ public class AppUserClientController extends BaseController {
         return success(adviseList);
     }
 
+    /** TODO 完成接口
+     * 学生获取营养摄入分析
+     * @param studentNumber
+     * @return
+     */
+    @GetMapping("/nutritionAnalysis/{studentNumber}")
+    public AjaxResult nutritionAnalysis(@PathVariable String studentNumber) {
+        return null;
+    }
+
+    /** TODO 完成接口
+     * 学生获取健康评分
+     * @param studentNumber
+     * @return
+     */
+    @GetMapping("/getHealthScore/{studentNumber}")
+    public AjaxResult getHealthScore(@PathVariable String studentNumber) {
+        return null;
+    }
+
 
 
 }

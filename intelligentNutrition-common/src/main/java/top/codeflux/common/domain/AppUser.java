@@ -25,7 +25,7 @@ import top.codeflux.common.core.domain.BaseEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class AppUser extends BaseEntity
+public class AppUser
 {
     private static final long serialVersionUID = 1L;
 
@@ -54,6 +54,9 @@ public class AppUser extends BaseEntity
     /** 体重 */
     @Excel(name = "体重")
     private Double weight;
+    @Excel(name = "注册时间")
+    private LocalDateTime createTime;
+    private LocalDateTime updateTime;
 
 //    private LocalDateTime createTime;
 //    private LocalDateTime updateTime;
@@ -68,8 +71,6 @@ public class AppUser extends BaseEntity
             .append("avatar", getAvatar())
             .append("height", getHeight())
             .append("weight", getWeight())
-            .append("createTime", getCreateTime())
-            .append("updateTime", getUpdateTime())
 //            .append("allergenList", getAllergenList())
             .toString();
     }
