@@ -210,4 +210,28 @@ public class AiServiceImpl implements AiService {
 //        log.info(res);
         return (res != null && !res.isEmpty()) ? List.of(res.split(",")) : new ArrayList<>();
     }
+
+    /**
+     * 分析健康评分
+     *
+     * @param studentInfo
+     * @param sportRecord
+     * @param dietaryRecord
+     * @return
+     */
+    @Override
+    public double getHealthScore(String studentInfo, String sportRecord, String dietaryRecord) {
+        // 构建提示词
+        String prompt = String.format("请你根据以下信息,给出1到100的健康评分,\n" +
+                "用户信息: %s \n" +
+                "运动记录: %s \n" +
+                "饮食记录: %s \n" +
+                "请注意，你仅需返回一个数字即可，无需返回其他任何信息,谢谢！",
+                studentInfo,
+                sportRecord,
+                dietaryRecord);
+        // 调用大模型 并获取结果
+        String res = chatClient.prompt(prompt).call().content();
+        return res != null ? Double.parseDouble(res): 0.0;
+    }
 }

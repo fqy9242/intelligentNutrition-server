@@ -19,16 +19,16 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.util.DigestUtils;
 import org.springframework.web.multipart.MultipartFile;
 import top.codeflux.ai.service.AiService;
+import top.codeflux.appUser.domain.HealthScore;
 import top.codeflux.appUser.domain.PhysicalExaminationPlan;
 import top.codeflux.appUser.domain.SportRecord;
 import top.codeflux.appUser.domain.dto.AppUserLoginDto;
 import top.codeflux.appUser.domain.dto.AppUserDto;
 import top.codeflux.appUser.domain.vo.AppUserLoginVo;
 import top.codeflux.appUser.domain.vo.AppUserVo;
+import top.codeflux.appUser.domain.vo.GetHealthScoreVo;
 import top.codeflux.appUser.domain.vo.TodayRecommendCalorieVo;
-import top.codeflux.appUser.service.DietaryRecordService;
-import top.codeflux.appUser.service.PhysicalExaminationPlanService;
-import top.codeflux.appUser.service.SportRecordService;
+import top.codeflux.appUser.service.*;
 import top.codeflux.appUser.utils.CommonUtil;
 import top.codeflux.common.constant.OptionConstants;
 import top.codeflux.common.constant.ResponseMessage;
@@ -46,7 +46,6 @@ import org.springframework.transaction.annotation.Transactional;
 import top.codeflux.appUser.domain.Allergen;
 import top.codeflux.appUser.mapper.AppUserMapper;
 import top.codeflux.common.domain.AppUser;
-import top.codeflux.appUser.service.IAppUserService;
 import top.codeflux.framework.web.service.TokenService;
 
 /**
@@ -68,6 +67,8 @@ public class AppUserServiceImpl extends ServiceImpl<AppUserMapper, AppUser> impl
     private SportRecordService sportRecordService;
     @Autowired
     private DietaryRecordService dietaryRecordService;
+    @Autowired
+    private HealthScoreService healthScoreService;
 
     /**
      * 查询app注册用户
@@ -376,6 +377,58 @@ public class AppUserServiceImpl extends ServiceImpl<AppUserMapper, AppUser> impl
         // 最终摄入: 吃的 - 消耗的
         double res = foodCalorie - consumeCalorie;
         return res >= 0 ? res : 0.0;
+    }
+
+    /***
+     * 用户获取健康评分
+     * @return
+     */
+    @Override
+    public GetHealthScoreVo getHealthScore(String studentNumber) {
+        // 查询上次的评分
+        HealthScore lastRecord = healthScoreService.lambdaQuery().eq(HealthScore::getStudentNumber, studentNumber)
+                .orderByDesc(HealthScore::getCreateTime)
+                .last("limit 1")
+                .one();
+        double lastScore = 0.0;
+        if (lastRecord != null) {
+            LocalDate recordDate = lastRecord.getCreateTime().toLocalDate();
+            LocalDate today = LocalDate.now();
+            // 获取本周的开始日期（周一）
+            LocalDate startOfWeek = today.minusDays(today.getDayOfWeek().getValue() - 1);
+            lastScore = lastRecord.getScore();
+            // 如果上次的评分记录就是这周的，则直接返回
+            if (recordDate.isEqual(startOfWeek) || recordDate.isAfter(startOfWeek)) {
+                return GetHealthScoreVo.builder()
+                        .lastScore(lastScore)
+                        .nowScore(lastScore) // 本周的分数就是上次的分数
+                        .returnTime(LocalDateTime.now())
+                        .build();
+            }
+
+        }
+        // 查询今天的评分
+        // 根据学号查询用户信息
+        AppUser user = lambdaQuery().eq(AppUser::getStudentNumber, studentNumber).one();
+        // 根据学号查询运动记录信息
+        List<SportRecord> sportRecords = sportRecordService.getByStudentNumber(studentNumber, OptionConstants.FALSE);
+        // 根据学号查询饮食记录信息
+        List<DietaryRecord> dietaryRecords = dietaryRecordService.getByStudentNumber(studentNumber);
+        // 喂给ai 获取本次评分
+        double score = aiService.getHealthScore(user.toString(), sportRecords.toString(), dietaryRecords.toString());
+        // 插入到数据库中
+        HealthScore healthScore = HealthScore.builder()
+                .score(score)
+                .studentNumber(studentNumber)
+                .createTime(LocalDateTime.now())
+                .build();
+        healthScoreService.save(healthScore);
+        // 创建一个vo对象并返回
+        return GetHealthScoreVo.builder()
+                .lastScore(lastScore)
+                .nowScore(score)
+                .returnTime(LocalDateTime.now())
+                .build();
     }
 
 

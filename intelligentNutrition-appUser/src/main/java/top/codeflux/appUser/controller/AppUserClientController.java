@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import top.codeflux.appUser.domain.DrinkingWaterRecord;
 import top.codeflux.appUser.domain.SportRecord;
+import top.codeflux.appUser.domain.vo.GetHealthScoreVo;
 import top.codeflux.appUser.domain.vo.TodayDietaryRecordVo;
 import top.codeflux.appUser.domain.vo.TodayRecommendCalorieVo;
 import top.codeflux.appUser.service.*;
@@ -127,14 +128,16 @@ public class AppUserClientController extends BaseController {
         return null;
     }
 
-    /** TODO 完成接口
+    /**
      * 学生获取健康评分
      * @param studentNumber
      * @return
      */
+//    @Anonymous
     @GetMapping("/getHealthScore/{studentNumber}")
     public AjaxResult getHealthScore(@PathVariable String studentNumber) {
-        return null;
+        GetHealthScoreVo vo = userService.getHealthScore(studentNumber);
+        return success(vo);
     }
 
 

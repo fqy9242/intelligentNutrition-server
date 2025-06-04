@@ -50,4 +50,13 @@ public interface AiService {
      * @return 三条健康建议
      */
     List<String> getHealthAdvise(String studentInfo, String dietaryRecordInfo, String sportRecordInfo);
+
+    /**
+     *  分析健康评分
+     * @param studentInfo
+     * @param sportRecord
+     * @param dietaryRecord
+     * @return
+     */
+    double getHealthScore(String studentInfo, String sportRecord, String dietaryRecord);
 }
