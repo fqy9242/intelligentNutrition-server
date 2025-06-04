@@ -12,7 +12,10 @@ import top.codeflux.service.AdministratorAnalysisService;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author qht
@@ -53,23 +56,37 @@ public class AdministratorAnalysisServiceImpl implements AdministratorAnalysisSe
         //  创建一个vo对象
         AdvantageExerciseForDayVo vo = new AdvantageExerciseForDayVo();
         // 统计这个月的所有运动时长 汇总
-        // 先获取现在是几号
-        int dayOfMonth = LocalDate.now().getDayOfMonth();
         // 获取这个月1号的时间
-        LocalDate firstDayOfMonth = LocalDate.now().plusDays(-1 * dayOfMonth);
+        LocalDate firstDayOfMonth = LocalDate.now().withDayOfMonth(1);
+        // 下个月1号的时间
+        LocalDate nextMonthFirstDay = firstDayOfMonth.plusMonths(1);
+        // 上个月1号的时间
+        LocalDate lastMonthFirstDay = firstDayOfMonth.minusMonths(1);
         // 只统计运动时间属于这个月的记录
         List<SportRecord> thisMonthRecord = sportRecordService.lambdaQuery()
                 .ge(SportRecord::getExerciseTime, firstDayOfMonth )
+                .lt(SportRecord::getExerciseTime, nextMonthFirstDay)
                 .list();
         double advantageDuration = 0.0;
+        var countUserSet = new HashSet<>();
+        var countDaysSet = new HashSet<>();
         if (thisMonthRecord != null && !thisMonthRecord.isEmpty()) {
             // 统计平均值
             advantageDuration = thisMonthRecord.stream().mapToDouble(SportRecord::getDuration).sum();
-            advantageDuration /= thisMonthRecord.size();
+            thisMonthRecord.forEach(record -> {
+                countUserSet.add(record.getStudentNumber());
+                countDaysSet.add(record.getExerciseTime().toLocalDate());
+            });
+            // 先计算人均这个月
+            advantageDuration /= countUserSet.size();
+            // 再计算人均每天
+            advantageDuration /= countDaysSet.size();
+            countUserSet.clear();
+            countDaysSet.clear();
         }
         // 计算上个月的平均值
         List<SportRecord> lastMonthRecord = sportRecordService.lambdaQuery()
-                .ge(SportRecord::getExerciseTime, firstDayOfMonth.plusMonths(-1))
+                .ge(SportRecord::getExerciseTime, lastMonthFirstDay)
                 .lt(SportRecord::getExerciseTime, firstDayOfMonth)
                 .list();
         double lastMonthAdv = 0.0;
@@ -77,7 +94,12 @@ public class AdministratorAnalysisServiceImpl implements AdministratorAnalysisSe
             lastMonthAdv = (lastMonthRecord
                     .stream()
                     .mapToDouble(SportRecord::getDuration)
-                    .sum()) / lastMonthRecord.size();
+                    .sum());
+            lastMonthRecord.forEach(record -> {
+                countUserSet.add(record.getStudentNumber());
+                countDaysSet.add(record.getExerciseTime().toLocalDate());
+            });
+            lastMonthAdv /= countUserSet.size() * countDaysSet.size();
         }
         vo.setDayAdvExerciseMinute(advantageDuration);
         vo.setLastMonthDayAdvExerciseMinute(lastMonthAdv);

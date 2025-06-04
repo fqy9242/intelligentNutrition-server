@@ -25,6 +25,7 @@ import top.codeflux.appUser.domain.dto.AppUserLoginDto;
 import top.codeflux.appUser.domain.dto.AppUserDto;
 import top.codeflux.appUser.domain.vo.AppUserLoginVo;
 import top.codeflux.appUser.domain.vo.AppUserVo;
+import top.codeflux.appUser.domain.vo.TodayRecommendCalorieVo;
 import top.codeflux.appUser.service.DietaryRecordService;
 import top.codeflux.appUser.service.PhysicalExaminationPlanService;
 import top.codeflux.appUser.service.SportRecordService;
@@ -310,7 +311,7 @@ public class AppUserServiceImpl extends ServiceImpl<AppUserMapper, AppUser> impl
      * @return
      */
     @Override
-    public double todayRecommendCalories(String studentNumber) {
+    public TodayRecommendCalorieVo todayRecommendCalories(String studentNumber) {
         // 根据学号查询用户信息
         AppUser user = lambdaQuery().eq(AppUser::getStudentNumber, studentNumber).one();
         // 根据学号查询运动记录信息
@@ -318,7 +319,13 @@ public class AppUserServiceImpl extends ServiceImpl<AppUserMapper, AppUser> impl
         // 根据学号查询饮食记录信息
         List<DietaryRecord> dietaryRecords = dietaryRecordService.getByStudentNumber(studentNumber);
         // 拿数据喂给ai 分析今日推荐摄入卡路里
-        return aiService.getTodayRecommendCalories(user.toString(),dietaryRecords.toString(), sportRecords.toString());
+        double recommendValue = aiService.getTodayRecommendCalories(user.toString(),dietaryRecords.toString(), sportRecords.toString());
+        TodayRecommendCalorieVo vo = new TodayRecommendCalorieVo();
+        vo.setRecommendValue(recommendValue);
+        // 计算今日摄入量
+        vo.setTodayCalorie(calculateTodayCalorie(studentNumber));
+        vo.setReturnTime(LocalDateTime.now());
+        return vo;
     }
 
     /**
@@ -340,7 +347,36 @@ public class AppUserServiceImpl extends ServiceImpl<AppUserMapper, AppUser> impl
         return aiService.getHealthAdvise(user.toString(),dietaryRecords.toString(), sportRecords.toString());
     }
 
-
+    /**
+     * 统计今日摄入热量
+     *
+     * @param studentNumber 学号
+     * @return 今日摄入热量
+     */
+    @Override
+    public double calculateTodayCalorie(String studentNumber) {
+        // 统计用户今日进食了摄入了多少热量
+        List<DietaryRecord> dietaryRecordList = dietaryRecordService.lambdaQuery()
+                .eq(DietaryRecord::getStudentNumber, studentNumber)
+                .last("AND DATE(create_time) = CURRENT_DATE")
+                .list();
+        double foodCalorie = 0.0;
+        if (dietaryRecordList != null && ! dietaryRecordList.isEmpty()) {
+            foodCalorie = dietaryRecordList.stream().mapToDouble(DietaryRecord::getFoodCalorie).sum();
+        }
+        // 统计用户运动消耗了多少热量
+        List<SportRecord> sportRecordList = sportRecordService.lambdaQuery()
+                .eq(SportRecord::getStudentNumber, studentNumber)
+                .last("AND DATE(exercise_time) = CURRENT_DATE")
+                .list();
+        double consumeCalorie = 0.0;
+        if (sportRecordList != null && !sportRecordList.isEmpty()) {
+            consumeCalorie = sportRecordList.stream().mapToDouble(SportRecord::getConsumeCalorie).sum();
+        }
+        // 最终摄入: 吃的 - 消耗的
+        double res = foodCalorie - consumeCalorie;
+        return res >= 0 ? res : 0.0;
+    }
 
 
     /**

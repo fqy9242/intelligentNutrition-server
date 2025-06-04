@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import top.codeflux.appUser.domain.DrinkingWaterRecord;
 import top.codeflux.appUser.domain.SportRecord;
 import top.codeflux.appUser.domain.vo.TodayDietaryRecordVo;
+import top.codeflux.appUser.domain.vo.TodayRecommendCalorieVo;
 import top.codeflux.appUser.service.*;
 import top.codeflux.common.domain.DietaryRecord;
 import top.codeflux.appUser.domain.PhysicalExaminationPlan;
@@ -99,10 +100,10 @@ public class AppUserClientController extends BaseController {
      * @return
      */
     @GetMapping("/todayRecommendCalories/{studentNumber}")
-//    @Anonymous
+    @Anonymous
     public AjaxResult todayRecommendCalories(@PathVariable String studentNumber) {
-        double calories = userService.todayRecommendCalories(studentNumber);
-        return success(calories);
+        TodayRecommendCalorieVo vo = userService.todayRecommendCalories(studentNumber);
+        return success(vo);
     }
 
     /**

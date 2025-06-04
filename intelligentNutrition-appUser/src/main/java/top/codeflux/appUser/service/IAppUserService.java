@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import org.springframework.web.multipart.MultipartFile;
 import top.codeflux.appUser.domain.PhysicalExaminationPlan;
 import top.codeflux.appUser.domain.dto.AppUserDto;
+import top.codeflux.appUser.domain.vo.TodayRecommendCalorieVo;
 import top.codeflux.common.domain.AppUser;
 import top.codeflux.appUser.domain.dto.AppUserLoginDto;
 import top.codeflux.appUser.domain.vo.AppUserLoginVo;
@@ -93,7 +94,7 @@ public interface IAppUserService extends IService<AppUser> {
      * @param studentNumber
      * @return
      */
-    double todayRecommendCalories(String studentNumber);
+    TodayRecommendCalorieVo todayRecommendCalories(String studentNumber);
 
     /**
      *  获取健康建议
@@ -101,4 +102,11 @@ public interface IAppUserService extends IService<AppUser> {
      * @return
      */
     List<String> getHealthAdvise(String studentNumber);
+
+    /**
+     * 统计今日摄入热量
+     * @param studentNumber 学号
+     * @return 今日摄入热量
+     */
+    double calculateTodayCalorie(String studentNumber);
 }
