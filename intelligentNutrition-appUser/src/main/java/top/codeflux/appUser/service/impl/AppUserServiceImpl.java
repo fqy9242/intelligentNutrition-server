@@ -386,7 +386,6 @@ public class AppUserServiceImpl extends ServiceImpl<AppUserMapper, AppUser> impl
      * @return
      */
     @Override
-    @Cacheable()
     public GetHealthScoreVo getHealthScore(String studentNumber) {
         // 查询上次的评分
         HealthScore lastRecord = healthScoreService.lambdaQuery().eq(HealthScore::getStudentNumber, studentNumber)
