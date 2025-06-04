@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.springframework.web.multipart.MultipartFile;
+import top.codeflux.ai.domain.vo.NutritionIntakeResult;
 import top.codeflux.appUser.domain.PhysicalExaminationPlan;
 import top.codeflux.appUser.domain.dto.AppUserDto;
 import top.codeflux.appUser.domain.vo.GetHealthScoreVo;
@@ -116,4 +117,11 @@ public interface IAppUserService extends IService<AppUser> {
      * @return
      */
     GetHealthScoreVo getHealthScore(String studentNumber);
+
+    /**
+     * 营养摄入量分析
+     * @param studentNumber
+     * @return
+     */
+    NutritionIntakeResult nutritionAnalysis(String studentNumber);
 }

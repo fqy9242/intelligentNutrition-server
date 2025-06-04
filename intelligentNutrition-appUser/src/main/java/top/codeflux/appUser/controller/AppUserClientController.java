@@ -5,6 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import top.codeflux.ai.domain.vo.NutritionIntakeResult;
+import top.codeflux.ai.service.AiService;
 import top.codeflux.appUser.domain.DrinkingWaterRecord;
 import top.codeflux.appUser.domain.SportRecord;
 import top.codeflux.appUser.domain.vo.GetHealthScoreVo;
@@ -118,14 +120,16 @@ public class AppUserClientController extends BaseController {
         return success(adviseList);
     }
 
-    /** TODO 完成接口
+    /**
      * 学生获取营养摄入分析
      * @param studentNumber
      * @return
      */
     @GetMapping("/nutritionAnalysis/{studentNumber}")
+    @Anonymous
     public AjaxResult nutritionAnalysis(@PathVariable String studentNumber) {
-        return null;
+        NutritionIntakeResult result = userService.nutritionAnalysis(studentNumber);
+        return success(result);
     }
 
     /**

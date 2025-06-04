@@ -14,12 +14,14 @@ import org.springframework.stereotype.Service;
 import top.codeflux.ai.constants.MyChatModel;
 import top.codeflux.ai.domain.dto.ChatPrompt;
 import top.codeflux.ai.domain.vo.FoodRecognitionResult;
+import top.codeflux.ai.domain.vo.NutritionIntakeResult;
 import top.codeflux.ai.service.AiService;
 import top.codeflux.common.constant.ResponseMessage;
 import top.codeflux.common.domain.AppUser;
 import top.codeflux.common.domain.DietaryRecord;
 import top.codeflux.common.exception.base.BaseException;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -233,5 +235,22 @@ public class AiServiceImpl implements AiService {
         // 调用大模型 并获取结果
         String res = chatClient.prompt(prompt).call().content();
         return res != null ? Double.parseDouble(res): 0.0;
+    }
+
+    /**
+     * 分析摄入营养
+     */
+    @Override
+    public NutritionIntakeResult nutritionAnalysis(String foodRecord) {
+        // 构建提示词
+        String prompt = String.format("请分析摄入的营养," +
+                "用不足、达标、适中、偏高等词描述,下面是用户的近期饮食信息\n %s",foodRecord);
+        // 调用大模型并获取结果
+        NutritionIntakeResult result = chatClient.prompt(prompt).call().entity(NutritionIntakeResult.class);
+        if (result != null) {
+//            result.setResponseDateTime(LocalDateTime.now());
+            return result;
+        }
+        return null;
     }
 }

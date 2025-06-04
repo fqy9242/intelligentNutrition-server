@@ -4,6 +4,7 @@ import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.core.io.Resource;
 import top.codeflux.ai.domain.dto.ChatPrompt;
 import top.codeflux.ai.domain.vo.FoodRecognitionResult;
+import top.codeflux.ai.domain.vo.NutritionIntakeResult;
 import top.codeflux.common.domain.AppUser;
 import top.codeflux.common.domain.DietaryRecord;
 
@@ -59,4 +60,11 @@ public interface AiService {
      * @return
      */
     double getHealthScore(String studentInfo, String sportRecord, String dietaryRecord);
+
+    /**
+     *  分析摄入营养
+     * @param string
+     * @return
+     */
+    NutritionIntakeResult nutritionAnalysis(String foodRecord);
 }

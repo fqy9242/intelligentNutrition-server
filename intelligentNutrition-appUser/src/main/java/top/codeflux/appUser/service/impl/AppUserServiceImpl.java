@@ -15,9 +15,11 @@ import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.BeanUtils;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.util.DigestUtils;
 import org.springframework.web.multipart.MultipartFile;
+import top.codeflux.ai.domain.vo.NutritionIntakeResult;
 import top.codeflux.ai.service.AiService;
 import top.codeflux.appUser.domain.HealthScore;
 import top.codeflux.appUser.domain.PhysicalExaminationPlan;
@@ -384,6 +386,7 @@ public class AppUserServiceImpl extends ServiceImpl<AppUserMapper, AppUser> impl
      * @return
      */
     @Override
+    @Cacheable()
     public GetHealthScoreVo getHealthScore(String studentNumber) {
         // 查询上次的评分
         HealthScore lastRecord = healthScoreService.lambdaQuery().eq(HealthScore::getStudentNumber, studentNumber)
@@ -405,7 +408,6 @@ public class AppUserServiceImpl extends ServiceImpl<AppUserMapper, AppUser> impl
                         .returnTime(LocalDateTime.now())
                         .build();
             }
-
         }
         // 查询今天的评分
         // 根据学号查询用户信息
@@ -467,5 +469,24 @@ public class AppUserServiceImpl extends ServiceImpl<AppUserMapper, AppUser> impl
         });
         vo.setAllergen(simpleAllergenInfoList);
         return vo;
+    }
+
+    /**
+     * 营养摄入量分析
+     *
+     * @param studentNumber
+     * @return
+     */
+    @Override
+    public NutritionIntakeResult nutritionAnalysis(String studentNumber) {
+        // 查询用户近期进食信息
+        List<DietaryRecord> dietaryRecordList = dietaryRecordService.lambdaQuery()
+                .eq(DietaryRecord::getStudentNumber, studentNumber)
+                .orderByDesc(DietaryRecord::getCreateTime)
+                .last("limit 50").list();
+        if (dietaryRecordList == null) {
+            return null;
+        }
+        return aiService.nutritionAnalysis(dietaryRecordList.toString());
     }
 }
