@@ -144,6 +144,13 @@ public class AppUserClientController extends BaseController {
         return success(vo);
     }
 
+    @Anonymous
+    @GetMapping("/heathCheckInDays/{studentNumber}")
+    public AjaxResult heathCheckInDays(@PathVariable String studentNumber) {
+        long days = userService.countHeathCheckInDays(studentNumber);
+        return success(days);
+    }
+
 
 
 }

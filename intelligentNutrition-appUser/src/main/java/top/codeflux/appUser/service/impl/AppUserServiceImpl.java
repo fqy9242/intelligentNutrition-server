@@ -21,9 +21,7 @@ import org.springframework.util.DigestUtils;
 import org.springframework.web.multipart.MultipartFile;
 import top.codeflux.ai.domain.vo.NutritionIntakeResult;
 import top.codeflux.ai.service.AiService;
-import top.codeflux.appUser.domain.HealthScore;
-import top.codeflux.appUser.domain.PhysicalExaminationPlan;
-import top.codeflux.appUser.domain.SportRecord;
+import top.codeflux.appUser.domain.*;
 import top.codeflux.appUser.domain.dto.AppUserLoginDto;
 import top.codeflux.appUser.domain.dto.AppUserDto;
 import top.codeflux.appUser.domain.vo.AppUserLoginVo;
@@ -45,7 +43,6 @@ import java.util.Objects;
 
 import top.codeflux.common.utils.StringUtils;
 import org.springframework.transaction.annotation.Transactional;
-import top.codeflux.appUser.domain.Allergen;
 import top.codeflux.appUser.mapper.AppUserMapper;
 import top.codeflux.common.domain.AppUser;
 import top.codeflux.framework.web.service.TokenService;
@@ -71,6 +68,8 @@ public class AppUserServiceImpl extends ServiceImpl<AppUserMapper, AppUser> impl
     private DietaryRecordService dietaryRecordService;
     @Autowired
     private HealthScoreService healthScoreService;
+    @Autowired
+    private HealthCheckInService healthCheckInService;
 
     /**
      * 查询app注册用户
@@ -328,6 +327,17 @@ public class AppUserServiceImpl extends ServiceImpl<AppUserMapper, AppUser> impl
         // 计算今日摄入量
         vo.setTodayCalorie(calculateTodayCalorie(studentNumber));
         vo.setReturnTime(LocalDateTime.now());
+        // 如果今日摄入卡路里 <= 推荐摄入卡路里 则代表今日已经健康打卡 => 插入数据库
+        if (vo.getRecommendValue() < vo.getTodayCalorie()) {
+            healthCheckInService.save(
+                    HealthCheckIn.builder()
+                            .studentNumber(studentNumber)
+                            .createTime(LocalDateTime.now())
+                            .build()
+            );
+        }
+
+
         return vo;
     }
 
@@ -487,5 +497,18 @@ public class AppUserServiceImpl extends ServiceImpl<AppUserMapper, AppUser> impl
             return null;
         }
         return aiService.nutritionAnalysis(dietaryRecordList.toString());
+    }
+
+    /**
+     * 统计健康打卡天数
+     *
+     * @param studentNumber
+     * @return
+     */
+    @Override
+    public long countHeathCheckInDays(String studentNumber) {
+        return healthCheckInService.lambdaQuery()
+                .eq(HealthCheckIn::getStudentNumber, studentNumber)
+                .count();
     }
 }

@@ -124,4 +124,11 @@ public interface IAppUserService extends IService<AppUser> {
      * @return
      */
     NutritionIntakeResult nutritionAnalysis(String studentNumber);
+
+    /**
+     *  统计健康打卡天数
+     * @param studentNumber
+     * @return
+     */
+    long countHeathCheckInDays(String studentNumber);
 }
