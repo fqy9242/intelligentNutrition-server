@@ -2,8 +2,10 @@ package top.codeflux.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import top.codeflux.appUser.domain.HealthCheckIn;
 import top.codeflux.appUser.domain.HealthScore;
 import top.codeflux.appUser.domain.SportRecord;
+import top.codeflux.appUser.service.HealthCheckInService;
 import top.codeflux.appUser.service.HealthScoreService;
 import top.codeflux.appUser.service.IAppUserService;
 import top.codeflux.appUser.service.SportRecordService;
@@ -16,6 +18,7 @@ import top.codeflux.service.AdministratorAnalysisService;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -31,6 +34,7 @@ public class AdministratorAnalysisServiceImpl implements AdministratorAnalysisSe
     private final IAppUserService userService;
     private final SportRecordService sportRecordService;
     private final HealthScoreService healthScoreService;
+    private final HealthCheckInService healthCheckInService;
     /**
      * 统计用户数量
      *
@@ -157,6 +161,28 @@ public class AdministratorAnalysisServiceImpl implements AdministratorAnalysisSe
         }
 
         vo.setLastValue(lastAdvScore);
+        vo.setResponseTime(LocalDateTime.now());
+        return vo;
+    }
+
+    /**
+     * 统计今日健康打卡人数
+     */
+    @Override
+    public AnalysisIndexVo<Long> countTodayHealthCheckIn() {
+        // 统计今天的
+        Long todayCount = healthCheckInService.lambdaQuery()
+                .ge(HealthCheckIn::getCreateTime, LocalDate.now().atStartOfDay())
+                .le(HealthCheckIn::getCreateTime, LocalDate.now().atTime(LocalTime.MAX))
+                .count();
+        // 统计昨天的
+        Long yesterdayCount = healthCheckInService.lambdaQuery()
+                .ge(HealthCheckIn::getCreateTime, LocalDate.now().minusDays(1).atStartOfDay())
+                .lt(HealthCheckIn::getCreateTime, LocalDate.now().atStartOfDay())
+                .count();
+        AnalysisIndexVo<Long> vo = new AnalysisIndexVo<>();
+        vo.setValue(todayCount);
+        vo.setLastValue(yesterdayCount);
         vo.setResponseTime(LocalDateTime.now());
         return vo;
     }

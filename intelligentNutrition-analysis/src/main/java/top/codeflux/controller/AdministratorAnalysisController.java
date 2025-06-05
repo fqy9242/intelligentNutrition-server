@@ -57,4 +57,13 @@ public class AdministratorAnalysisController extends BaseController {
         AnalysisIndexVo<Double> vo = analysisService.getThisWeekAdvHealthScore();
         return success(vo);
     }
+
+    /**
+     * 统计今日健康打卡人数
+     */
+    @GetMapping("/countTodayHealthCheckIn")
+    public AjaxResult countTodayHealthCheckIn() {
+        AnalysisIndexVo<Long> vo = analysisService.countTodayHealthCheckIn();
+        return success(vo);
+    }
 }

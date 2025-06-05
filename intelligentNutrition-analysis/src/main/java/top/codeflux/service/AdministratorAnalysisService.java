@@ -26,4 +26,9 @@ public interface AdministratorAnalysisService {
      * @return
      */
     AnalysisIndexVo<Double> getThisWeekAdvHealthScore();
+
+    /**
+     * 统计今日健康打卡人数
+     */
+    AnalysisIndexVo<Long> countTodayHealthCheckIn();
 }
