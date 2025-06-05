@@ -2,14 +2,18 @@ package top.codeflux.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import top.codeflux.appUser.domain.HealthScore;
 import top.codeflux.appUser.domain.SportRecord;
+import top.codeflux.appUser.service.HealthScoreService;
 import top.codeflux.appUser.service.IAppUserService;
 import top.codeflux.appUser.service.SportRecordService;
 import top.codeflux.common.domain.AppUser;
 import top.codeflux.domain.vo.AdvantageExerciseForDayVo;
+import top.codeflux.domain.vo.AnalysisIndexVo;
 import top.codeflux.domain.vo.CountUserVo;
 import top.codeflux.service.AdministratorAnalysisService;
 
+import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
@@ -26,6 +30,7 @@ import java.util.stream.Collectors;
 public class AdministratorAnalysisServiceImpl implements AdministratorAnalysisService {
     private final IAppUserService userService;
     private final SportRecordService sportRecordService;
+    private final HealthScoreService healthScoreService;
     /**
      * 统计用户数量
      *
@@ -104,6 +109,55 @@ public class AdministratorAnalysisServiceImpl implements AdministratorAnalysisSe
         vo.setDayAdvExerciseMinute(advantageDuration);
         vo.setLastMonthDayAdvExerciseMinute(lastMonthAdv);
         vo.setReturnTime(LocalDateTime.now());
+        return vo;
+    }
+
+    /**
+     * 统计本周平均健康分数
+     * @return
+     */
+    @Override
+    public AnalysisIndexVo<Double> getThisWeekAdvHealthScore() {
+        // 创建需要返回的vo对象
+        AnalysisIndexVo<Double> vo = new AnalysisIndexVo<>();
+        // 创建小数格式化工具
+        DecimalFormat df = new DecimalFormat("#.##");
+        // 获取本周日期区间
+        // 先知道现在是星期几
+        int dayOfWeek = LocalDate.now().getDayOfWeek().getValue();
+        // 本周星期一
+        LocalDate thisWeekFirstDay = LocalDate.now().minusDays(dayOfWeek - 1);
+        // 查询本周的评分记录
+        List<HealthScore> thisWeekRecord = healthScoreService.lambdaQuery()
+                .ge(HealthScore::getCreateTime, thisWeekFirstDay)
+                .lt(HealthScore::getCreateTime, thisWeekFirstDay.plusWeeks(1))
+                .list();
+        // 平均分
+        double advScore = 0.0;
+        if (thisWeekRecord != null && !thisWeekRecord.isEmpty()) {
+            // 本周总分
+            double totalScore = thisWeekRecord.stream().mapToDouble(HealthScore::getScore).sum();
+            advScore = Double.parseDouble(df.format(totalScore / thisWeekRecord.size()));
+        }
+        vo.setValue(advScore);
+        // 开始计算上周平均分
+        // 获取上周星期一
+        LocalDate lastWeekFirstDay = thisWeekFirstDay.minusWeeks(1);
+        // 查询数据库
+        List<HealthScore> lastWeekRecord = healthScoreService.lambdaQuery()
+                .ge(HealthScore::getCreateTime, lastWeekFirstDay)
+                .lt(HealthScore::getCreateTime, lastWeekFirstDay.plusWeeks(1))
+                .list();
+
+        double lastAdvScore = 0.0;
+        if (lastWeekRecord != null && !lastWeekRecord.isEmpty()) {
+            // 计算平均值
+            double lastWeekTotalScore = lastWeekRecord.stream().mapToDouble(HealthScore::getScore).sum();
+            lastAdvScore = Double.parseDouble(df.format(lastWeekTotalScore / lastWeekRecord.size()));
+        }
+
+        vo.setLastValue(lastAdvScore);
+        vo.setResponseTime(LocalDateTime.now());
         return vo;
     }
 }

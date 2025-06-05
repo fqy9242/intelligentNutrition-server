@@ -1,6 +1,7 @@
 package top.codeflux.service;
 
 import top.codeflux.domain.vo.AdvantageExerciseForDayVo;
+import top.codeflux.domain.vo.AnalysisIndexVo;
 import top.codeflux.domain.vo.CountUserVo;
 
 /**
@@ -19,4 +20,10 @@ public interface AdministratorAnalysisService {
      * @return
      */
     AdvantageExerciseForDayVo advantageExerciseForDay();
+
+    /**
+     * 统计本周平均健康分数
+     * @return
+     */
+    AnalysisIndexVo<Double> getThisWeekAdvHealthScore();
 }
