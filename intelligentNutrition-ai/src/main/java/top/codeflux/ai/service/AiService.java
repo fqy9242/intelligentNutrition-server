@@ -7,6 +7,7 @@ import top.codeflux.ai.domain.vo.FoodRecognitionResult;
 import top.codeflux.ai.domain.vo.NutritionIntakeResult;
 import top.codeflux.common.domain.AppUser;
 import top.codeflux.common.domain.DietaryRecord;
+import top.codeflux.common.domain.vo.chart.PieChartVo;
 
 import java.util.List;
 
@@ -67,4 +68,9 @@ public interface AiService {
      * @return
      */
     NutritionIntakeResult nutritionAnalysis(String foodRecord);
+
+    /**
+     * 分析近期学生摄入营养成分
+     */
+    PieChartVo analysisNutritional(String dietaryRecordListStr);
 }

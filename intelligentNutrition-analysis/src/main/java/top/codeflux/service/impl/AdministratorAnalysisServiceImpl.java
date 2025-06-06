@@ -1,15 +1,16 @@
 package top.codeflux.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import top.codeflux.ai.service.AiService;
 import top.codeflux.appUser.domain.HealthCheckIn;
 import top.codeflux.appUser.domain.HealthScore;
 import top.codeflux.appUser.domain.SportRecord;
-import top.codeflux.appUser.service.HealthCheckInService;
-import top.codeflux.appUser.service.HealthScoreService;
-import top.codeflux.appUser.service.IAppUserService;
-import top.codeflux.appUser.service.SportRecordService;
+import top.codeflux.appUser.service.*;
 import top.codeflux.common.domain.AppUser;
+import top.codeflux.common.domain.DietaryRecord;
+import top.codeflux.common.domain.vo.chart.PieChartVo;
 import top.codeflux.domain.vo.*;
 import top.codeflux.service.AdministratorAnalysisService;
 
@@ -18,7 +19,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * @author qht
@@ -31,6 +31,8 @@ public class AdministratorAnalysisServiceImpl implements AdministratorAnalysisSe
     private final SportRecordService sportRecordService;
     private final HealthScoreService healthScoreService;
     private final HealthCheckInService healthCheckInService;
+    private final DietaryRecordService dietaryRecordService;
+    private final AiService aiService;
     /**
      * 统计用户数量
      *
@@ -213,7 +215,7 @@ public class AdministratorAnalysisServiceImpl implements AdministratorAnalysisSe
         Collections.reverse(xAxis);
         Collections.reverse(yAis);
         vo.setXAxis(xAxis);
-        vo.setYXis(yAis);
+        vo.setYAxis(yAis);
         return vo;
     }
 
@@ -228,5 +230,25 @@ public class AdministratorAnalysisServiceImpl implements AdministratorAnalysisSe
 
         LocalDateTime.now().withDayOfMonth(1);
         return null;
+    }
+
+
+    /**
+     * 营养成分分布
+     *
+     * @return
+     */
+    @Override
+    @Cacheable(value = "nutritionalAnalysis", key = "'nutritional:' + T(java.time.LocalDate).now().toString()")
+    public PieChartVo analysisNutritional() {
+        // 获取最近一个月的学生饮食数据
+        // 获取这个月第一天的时间
+        LocalDateTime firstDayOfMonth = LocalDateTime.now().withDayOfMonth(1);
+        List<DietaryRecord> dietaryRecordList = dietaryRecordService.lambdaQuery()
+                .ge(DietaryRecord::getCreateTime, firstDayOfMonth)
+                .lt(DietaryRecord::getCreateTime, firstDayOfMonth.plusMonths(1))
+                .list();
+        // 调用ai进行分析
+        return aiService.analysisNutritional(dietaryRecordList.toString());
     }
 }

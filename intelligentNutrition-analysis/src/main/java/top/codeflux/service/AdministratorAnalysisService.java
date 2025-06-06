@@ -1,9 +1,9 @@
 package top.codeflux.service;
 
-import top.codeflux.domain.vo.AdvantageExerciseForDayVo;
-import top.codeflux.domain.vo.AnalysisIndexVo;
-import top.codeflux.domain.vo.ChartVo;
-import top.codeflux.domain.vo.CountUserVo;
+import top.codeflux.common.domain.vo.chart.PieChartVo;
+import top.codeflux.domain.vo.*;
+
+import java.util.List;
 
 /**
  * @author qht
@@ -44,4 +44,10 @@ public interface AdministratorAnalysisService {
      * @return
      */
     ChartVo<Integer> getBmiAdvTrendForMonth();
+
+    /**
+     *  营养成分分布
+     * @return
+     */
+    PieChartVo analysisNutritional();
 }

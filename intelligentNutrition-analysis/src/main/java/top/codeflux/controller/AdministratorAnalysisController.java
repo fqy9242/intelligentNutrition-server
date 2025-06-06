@@ -3,18 +3,16 @@ package top.codeflux.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import top.codeflux.appUser.service.IAppUserService;
 import top.codeflux.common.annotation.Anonymous;
 import top.codeflux.common.core.controller.BaseController;
 import top.codeflux.common.core.domain.AjaxResult;
-import top.codeflux.domain.vo.AdvantageExerciseForDayVo;
-import top.codeflux.domain.vo.AnalysisIndexVo;
-import top.codeflux.domain.vo.ChartVo;
-import top.codeflux.domain.vo.CountUserVo;
+import top.codeflux.common.domain.vo.chart.PieChartVo;
+import top.codeflux.domain.vo.*;
 import top.codeflux.service.AdministratorAnalysisService;
+
+import java.util.List;
 
 /**
  * @author qht
@@ -85,6 +83,16 @@ public class AdministratorAnalysisController extends BaseController {
     @GetMapping("/bmiAdvTrendForMonth")
     public AjaxResult bmiAdvTrendForMonth() {
         ChartVo<Integer> vo = analysisService.getBmiAdvTrendForMonth();
+        return success(vo);
+    }
+
+    /**
+     * 营养成分分布
+     * @return
+     */
+    @GetMapping("/analysisNutritional")
+    public AjaxResult analysisNutritional() {
+        PieChartVo vo = analysisService.analysisNutritional();
         return success(vo);
     }
 }

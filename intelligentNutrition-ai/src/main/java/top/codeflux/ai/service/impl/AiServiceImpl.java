@@ -19,6 +19,7 @@ import top.codeflux.ai.service.AiService;
 import top.codeflux.common.constant.ResponseMessage;
 import top.codeflux.common.domain.AppUser;
 import top.codeflux.common.domain.DietaryRecord;
+import top.codeflux.common.domain.vo.chart.PieChartVo;
 import top.codeflux.common.exception.base.BaseException;
 
 import java.time.LocalDateTime;
@@ -252,5 +253,19 @@ public class AiServiceImpl implements AiService {
             return result;
         }
         return null;
+    }
+
+    /**
+     * 分析近期学生摄入营养成分
+     *
+     * @param dietaryRecordListStr
+     */
+    @Override
+    public PieChartVo analysisNutritional(String dietaryRecordListStr) {
+        // 构建提示词
+        String prompt = String.format("请根据下列信息，统计用户所摄入的营养成分，例子: name: 碳水化合物, value: 28，value指的是百分比，所有value加起来需要是100\n" +
+                "用户近期饮食登记记录列表:%s", dietaryRecordListStr);
+        // 调用大模型分析
+        return chatClient.prompt(prompt).call().entity(PieChartVo.class);
     }
 }

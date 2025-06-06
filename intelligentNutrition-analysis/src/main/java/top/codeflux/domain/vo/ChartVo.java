@@ -12,5 +12,5 @@ import java.util.List;
 @Data
 public class ChartVo<T> {
     private List<String> xAxis;
-    private List<T> yXis;
+    private List<T> yAxis;
 }
