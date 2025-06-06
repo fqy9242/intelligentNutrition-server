@@ -54,6 +54,8 @@ public class AppUser
     /** 体重 */
     @Excel(name = "体重")
     private Double weight;
+    // 上次登录时间
+    private LocalDateTime lastLoginTime;
     @Excel(name = "注册时间")
     private LocalDateTime createTime;
     private LocalDateTime updateTime;

@@ -196,6 +196,10 @@ public class AppUserServiceImpl extends ServiceImpl<AppUserMapper, AppUser> impl
         if (user == null) {
             throw new BaseException(ResponseMessage.USERNAME_OR_PASSWORD_INCORRECT);
         }
+        // 更新上次登录时间
+        user.setLastLoginTime(LocalDateTime.now());
+        appUserMapper.updateAppUser(user);
+        // 获取vo对象并返回
         return getUserLoginVo(user);
     }
 

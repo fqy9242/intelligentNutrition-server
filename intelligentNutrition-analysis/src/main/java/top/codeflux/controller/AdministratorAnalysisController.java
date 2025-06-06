@@ -23,7 +23,6 @@ import top.codeflux.service.AdministratorAnalysisService;
 @Slf4j
 @RequestMapping("/admin/analysis")
 @RequiredArgsConstructor
-@Anonymous // TODO 注释掉该注解
 // TODO 使用AnalysisIndexVo替换可替换的VO类型
 public class AdministratorAnalysisController extends BaseController {
     private final AdministratorAnalysisService analysisService;
