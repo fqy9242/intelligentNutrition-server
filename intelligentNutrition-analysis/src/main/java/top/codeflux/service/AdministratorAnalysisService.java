@@ -2,6 +2,7 @@ package top.codeflux.service;
 
 import top.codeflux.domain.vo.AdvantageExerciseForDayVo;
 import top.codeflux.domain.vo.AnalysisIndexVo;
+import top.codeflux.domain.vo.ChartVo;
 import top.codeflux.domain.vo.CountUserVo;
 
 /**
@@ -31,4 +32,16 @@ public interface AdministratorAnalysisService {
      * 统计今日健康打卡人数
      */
     AnalysisIndexVo<Long> countTodayHealthCheckIn();
+
+    /**
+     * 统计用户增长趋势
+     * @return
+     */
+    ChartVo<Long> getUserTrend();
+
+    /**
+     * 统计bmi平均值趋势
+     * @return
+     */
+    ChartVo<Integer> getBmiAdvTrendForMonth();
 }

@@ -12,6 +12,7 @@ import top.codeflux.common.core.controller.BaseController;
 import top.codeflux.common.core.domain.AjaxResult;
 import top.codeflux.domain.vo.AdvantageExerciseForDayVo;
 import top.codeflux.domain.vo.AnalysisIndexVo;
+import top.codeflux.domain.vo.ChartVo;
 import top.codeflux.domain.vo.CountUserVo;
 import top.codeflux.service.AdministratorAnalysisService;
 
@@ -21,6 +22,7 @@ import top.codeflux.service.AdministratorAnalysisService;
  */
 @RestController
 @Slf4j
+@Anonymous
 @RequestMapping("/admin/analysis")
 @RequiredArgsConstructor
 // TODO 使用AnalysisIndexVo替换可替换的VO类型
@@ -63,6 +65,26 @@ public class AdministratorAnalysisController extends BaseController {
     @GetMapping("/countTodayHealthCheckIn")
     public AjaxResult countTodayHealthCheckIn() {
         AnalysisIndexVo<Long> vo = analysisService.countTodayHealthCheckIn();
+        return success(vo);
+    }
+
+    /**
+     * 统计用户增长趋势
+     * @return
+     */
+    @GetMapping("/userTrend")
+    public AjaxResult userTrend() {
+        ChartVo<Long> vo = analysisService.getUserTrend();
+        return success(vo);
+    }
+
+    /**
+     * bmi平均值趋势
+     * @return
+     */
+    @GetMapping("/bmiAdvTrendForMonth")
+    public AjaxResult bmiAdvTrendForMonth() {
+        ChartVo<Integer> vo = analysisService.getBmiAdvTrendForMonth();
         return success(vo);
     }
 }

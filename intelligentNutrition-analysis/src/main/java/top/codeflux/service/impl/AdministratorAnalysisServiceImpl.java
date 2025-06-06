@@ -10,18 +10,14 @@ import top.codeflux.appUser.service.HealthScoreService;
 import top.codeflux.appUser.service.IAppUserService;
 import top.codeflux.appUser.service.SportRecordService;
 import top.codeflux.common.domain.AppUser;
-import top.codeflux.domain.vo.AdvantageExerciseForDayVo;
-import top.codeflux.domain.vo.AnalysisIndexVo;
-import top.codeflux.domain.vo.CountUserVo;
+import top.codeflux.domain.vo.*;
 import top.codeflux.service.AdministratorAnalysisService;
 
 import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -185,5 +181,52 @@ public class AdministratorAnalysisServiceImpl implements AdministratorAnalysisSe
         vo.setLastValue(yesterdayCount);
         vo.setResponseTime(LocalDateTime.now());
         return vo;
+    }
+
+    /**
+     * 统计用户增长趋势
+     *
+     * @return
+     */
+    @Override
+    public ChartVo<Long> getUserTrend() {
+        // 创建一个图表vo对象
+        ChartVo<Long> vo = new ChartVo<>();
+        // 获取x轴数据 -> 近六个月
+        List<String> xAxis = new ArrayList<>();
+        LocalDateTime firstDayOfMonth = LocalDateTime.now().withDayOfMonth(1);
+//        xAxis.add(firstDayOfMonth.getMonthValue() + "月");
+        // yAix -> 用户增长
+        List<Long> yAis = new ArrayList<>();
+        for (int i = 0; i < 6; i++) {
+            LocalDateTime startTime = firstDayOfMonth.minusMonths(i);
+            LocalDateTime endTime = i > 0? firstDayOfMonth.minusMonths(i - 1) : firstDayOfMonth.minusMonths(1);
+            xAxis.add(startTime.getMonthValue() + "月");
+            // 查询新用户
+            Long countNewUser = userService.lambdaQuery()
+                    .lt(AppUser::getCreateTime, endTime)
+                    .gt(AppUser::getCreateTime, startTime)
+                    .count();
+            yAis.add(countNewUser);
+        }
+
+        Collections.reverse(xAxis);
+        Collections.reverse(yAis);
+        vo.setXAxis(xAxis);
+        vo.setYXis(yAis);
+        return vo;
+    }
+
+
+    /**
+     * 统计bmi平均值趋势
+     *
+     * @return
+     */
+    @Override
+    public ChartVo<Integer> getBmiAdvTrendForMonth() {
+
+        LocalDateTime.now().withDayOfMonth(1);
+        return null;
     }
 }
