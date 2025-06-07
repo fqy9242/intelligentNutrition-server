@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import top.codeflux.ai.domain.vo.NutritionIntakeResult;
+import top.codeflux.ai.domain.vo.ThisWeekNutritionTrendVo;
 import top.codeflux.ai.service.AiService;
 import top.codeflux.appUser.domain.DrinkingWaterRecord;
 import top.codeflux.appUser.domain.SportRecord;
@@ -148,8 +149,6 @@ public class AppUserClientController extends BaseController {
 
     /**
      * 统计该学生健康打卡天数
-     * @param studentNumber
-     * @return
      */
     @GetMapping("/heathCheckInDays/{studentNumber}")
     public AjaxResult heathCheckInDays(@PathVariable String studentNumber) {
@@ -157,6 +156,17 @@ public class AppUserClientController extends BaseController {
         return success(days);
     }
 
+    /**
+     * 获取本周营养趋势
+     * @param studentNumber 学号
+     * @return 返回内容
+     */
+    @GetMapping("/thisWeekNutritionTrend/{studentNumber}")
+    @Anonymous
+    public AjaxResult thisWeekNutritionTrend(@PathVariable String studentNumber) {
+        List<ThisWeekNutritionTrendVo> list = userService.getThisWeekNutritionTrend(studentNumber);
+        return success(list);
+    }
 
 
 }

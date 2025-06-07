@@ -5,6 +5,7 @@ import org.springframework.core.io.Resource;
 import top.codeflux.ai.domain.dto.ChatPrompt;
 import top.codeflux.ai.domain.vo.FoodRecognitionResult;
 import top.codeflux.ai.domain.vo.NutritionIntakeResult;
+import top.codeflux.ai.domain.vo.ThisWeekNutritionTrendVo;
 import top.codeflux.common.domain.AppUser;
 import top.codeflux.common.domain.DietaryRecord;
 import top.codeflux.common.domain.vo.chart.PieChartVo;
@@ -73,4 +74,11 @@ public interface AiService {
      * 分析近期学生摄入营养成分
      */
     PieChartVo analysisNutritional(String dietaryRecordListStr);
+
+    /**
+     * 分析用户本周营养摄入趋势
+     * @param string
+     * @return
+     */
+    List<ThisWeekNutritionTrendVo> analyzeThisWeekNutritionTrend(String getThisWeekNutritionTrendStr);
 }

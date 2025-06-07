@@ -15,6 +15,7 @@ import top.codeflux.ai.constants.MyChatModel;
 import top.codeflux.ai.domain.dto.ChatPrompt;
 import top.codeflux.ai.domain.vo.FoodRecognitionResult;
 import top.codeflux.ai.domain.vo.NutritionIntakeResult;
+import top.codeflux.ai.domain.vo.ThisWeekNutritionTrendVo;
 import top.codeflux.ai.service.AiService;
 import top.codeflux.common.constant.ResponseMessage;
 import top.codeflux.common.domain.AppUser;
@@ -26,6 +27,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author qht
@@ -267,5 +269,30 @@ public class AiServiceImpl implements AiService {
                 "用户近期饮食登记记录列表:%s", dietaryRecordListStr);
         // 调用大模型分析
         return chatClient.prompt(prompt).call().entity(PieChartVo.class);
+    }
+
+
+    /**
+     * 分析用户本周营养摄入趋势
+     */
+    @Override
+    public List<ThisWeekNutritionTrendVo> analyzeThisWeekNutritionTrend(String getThisWeekNutritionTrendStr) {
+        // 构建提示词
+        String prompt = String.format("请根据以下用户本周的饮食记录，分析其营养摄入趋势。\n" +
+                        "需要分析的营养素包括：蛋白质、脂肪、碳水化合物、维生素等。\n" +
+                        "请按照每日的趋势进行分析，并给出每天的营养素摄入评估。\n" +
+                        "用户本周饮食记录：%s\n" +
+                        "每个元素包含日期(date)和该日的营养评估(nutrition)。\n" +
+                        "字段名\t类型\t说明\t取值范围\n" +
+                        "day\tString\t星期几\t\"周一\" 到 \"周日\"\n" +
+                        "protein\tNumber\t蛋白质摄入达标百分比\t0-100\n" +
+                        "carbs\tNumber\t碳水化合物摄入达标百分比\t0-100\n" +
+                        "fat\tNumber\t脂肪摄入达标百分比\t0-100\n" +
+                        "vitamins\tNumber\t维生素摄入达标百分比\t0-100 \n" +
+                        "星期一到星期天每天都要返回 如果没有数据 则设为0",
+                getThisWeekNutritionTrendStr);
+
+        // 调用AI进行分析并返回结果
+        return Arrays.asList(Objects.requireNonNull(chatClient.prompt(prompt).call().entity(ThisWeekNutritionTrendVo[].class)));
     }
 }

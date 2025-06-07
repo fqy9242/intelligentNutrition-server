@@ -20,6 +20,7 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.util.DigestUtils;
 import org.springframework.web.multipart.MultipartFile;
 import top.codeflux.ai.domain.vo.NutritionIntakeResult;
+import top.codeflux.ai.domain.vo.ThisWeekNutritionTrendVo;
 import top.codeflux.ai.service.AiService;
 import top.codeflux.appUser.domain.*;
 import top.codeflux.appUser.domain.dto.AppUserLoginDto;
@@ -514,5 +515,28 @@ public class AppUserServiceImpl extends ServiceImpl<AppUserMapper, AppUser> impl
         return healthCheckInService.lambdaQuery()
                 .eq(HealthCheckIn::getStudentNumber, studentNumber)
                 .count();
+    }
+
+
+    /**
+     * 获取本周营养趋势
+     *
+     * @param studentNumber 学号
+     * @return 返回
+     */
+    @Override
+    @Cacheable(value = "nutritionTrend", key = "#studentNumber + '_' + T(java.time.LocalDate).now().toString()")
+    public List<ThisWeekNutritionTrendVo> getThisWeekNutritionTrend(String studentNumber) {
+        // 根据学号获取学生这一周的饮食记录
+        int weekDayValue = LocalDateTime.now().getDayOfWeek().getValue();
+        // 获取本周星期一的日期对象
+        LocalDate thisWeekFirstDay = LocalDate.now().minusDays(weekDayValue - 1);
+        List<DietaryRecord> dietaryRecordList = dietaryRecordService.lambdaQuery()
+                .eq(DietaryRecord::getStudentNumber, studentNumber)
+                .ge(DietaryRecord::getCreateTime, thisWeekFirstDay.atStartOfDay())
+                .lt(DietaryRecord::getCreateTime, thisWeekFirstDay.plusWeeks(1).atStartOfDay())
+                .list();
+        // 调用ai进行分析
+        return aiService.analyzeThisWeekNutritionTrend(dietaryRecordList.toString());
     }
 }

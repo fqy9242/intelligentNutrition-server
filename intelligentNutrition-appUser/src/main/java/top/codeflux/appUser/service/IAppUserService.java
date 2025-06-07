@@ -5,6 +5,7 @@ import java.util.List;
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.springframework.web.multipart.MultipartFile;
 import top.codeflux.ai.domain.vo.NutritionIntakeResult;
+import top.codeflux.ai.domain.vo.ThisWeekNutritionTrendVo;
 import top.codeflux.appUser.domain.PhysicalExaminationPlan;
 import top.codeflux.appUser.domain.dto.AppUserDto;
 import top.codeflux.appUser.domain.vo.GetHealthScoreVo;
@@ -131,4 +132,11 @@ public interface IAppUserService extends IService<AppUser> {
      * @return
      */
     long countHeathCheckInDays(String studentNumber);
+
+    /**
+     * 获取本周营养趋势
+     * @param studentNumber 学号
+     * @return 返回
+     */
+    List<ThisWeekNutritionTrendVo> getThisWeekNutritionTrend(String studentNumber);
 }
