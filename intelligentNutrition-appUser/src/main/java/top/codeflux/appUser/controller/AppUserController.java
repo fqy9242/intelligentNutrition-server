@@ -2,6 +2,7 @@ package top.codeflux.appUser.controller;
 
 import java.io.InputStream;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletResponse;
@@ -24,6 +25,8 @@ import top.codeflux.common.annotation.Anonymous;
 import top.codeflux.common.annotation.Log;
 import top.codeflux.common.core.controller.BaseController;
 import top.codeflux.common.core.domain.AjaxResult;
+import top.codeflux.common.core.page.PageDomain;
+import top.codeflux.common.core.page.TableSupport;
 import top.codeflux.common.enums.BusinessType;
 import top.codeflux.common.domain.AppUser;
 import top.codeflux.appUser.service.IAppUserService;
@@ -51,9 +54,17 @@ public class AppUserController extends BaseController
     @GetMapping("/list")
     public TableDataInfo list(AppUser appUser)
     {
-        startPage();
+        PageDomain pageDomain = TableSupport.buildPageRequest();
+        Integer pageNum = pageDomain.getPageNum();
+        Integer pageSize = pageDomain.getPageSize();
         List<AppUserVo> list = appUserService.selectAppUserList(appUser);
-        return getDataTable(list);
+        //处理上面查询的list集合
+        int num = list.size();
+        list = list.stream().skip((pageNum - 1) * pageSize).limit(pageSize).collect(Collectors.toList());
+        TableDataInfo rspData = new TableDataInfo();
+        rspData.setRows(list);
+        rspData.setTotal(num);
+        return rspData;
     }
 
     /**
