@@ -251,4 +251,84 @@ public class AdministratorAnalysisServiceImpl implements AdministratorAnalysisSe
         // 调用ai进行分析
         return aiService.analysisNutritional(dietaryRecordList.toString());
     }
+
+    /**
+     * 统计用户活动
+     *
+     * @return
+     */
+    @Override
+    public BarChartVo analysisUserActivity() {
+        BarChartVo vo = new BarChartVo();
+        // 设置x轴数据
+        vo.setXAxis(List.of("周一", "周二", "周三", "周四", "周五", "周六", "周日"));
+        // y轴数据
+        var addSportRecordData = new BarChartVo.SeriesData();
+        var addMealRecordData = new BarChartVo.SeriesData();
+        var healthTestData = new BarChartVo.SeriesData();
+
+        // 设置系列名称
+        addSportRecordData.setName("运动记录");
+        addMealRecordData.setName("膳食记录");
+        healthTestData.setName("健康测试");
+
+        // 获取本周一的日期
+        LocalDate today = LocalDate.now();
+        int dayOfWeek = today.getDayOfWeek().getValue();
+        LocalDate thisWeekMonday = today.minusDays(dayOfWeek - 1);
+
+        // 初始化每天的统计数据
+        List<Integer> sportCounts = new ArrayList<>(Arrays.asList(0, 0, 0, 0, 0, 0, 0));
+        List<Integer> mealCounts = new ArrayList<>(Arrays.asList(0, 0, 0, 0, 0, 0, 0));
+        List<Integer> healthCounts = new ArrayList<>(Arrays.asList(0, 0, 0, 0, 0, 0, 0));
+
+        // 查询运动记录数据
+        List<SportRecord> sportRecords = sportRecordService.lambdaQuery()
+                .ge(SportRecord::getExerciseTime, thisWeekMonday.atStartOfDay())
+                .lt(SportRecord::getExerciseTime, thisWeekMonday.plusDays(7).atStartOfDay())
+                .list();
+
+        // 统计每天的运动记录数量
+        if (sportRecords != null && !sportRecords.isEmpty()) {
+            for (SportRecord record : sportRecords) {
+                int dayIndex = record.getExerciseTime().getDayOfWeek().getValue() - 1;
+                sportCounts.set(dayIndex, sportCounts.get(dayIndex) + 1);
+            }
+        }
+
+        // 查询膳食记录数据
+        List<DietaryRecord> dietaryRecords = dietaryRecordService.lambdaQuery()
+                .ge(DietaryRecord::getCreateTime, thisWeekMonday.atStartOfDay())
+                .lt(DietaryRecord::getCreateTime, thisWeekMonday.plusDays(7).atStartOfDay())
+                .list();
+
+        // 统计每天的膳食记录数量
+        if (dietaryRecords != null && !dietaryRecords.isEmpty()) {
+            for (DietaryRecord record : dietaryRecords) {
+                int dayIndex = record.getCreateTime().getDayOfWeek().getValue() - 1;
+                mealCounts.set(dayIndex, mealCounts.get(dayIndex) + 1);
+            }
+        }
+
+        // 查询健康测试数据
+        List<HealthScore> healthScores = healthScoreService.lambdaQuery()
+                .ge(HealthScore::getCreateTime, thisWeekMonday)
+                .lt(HealthScore::getCreateTime, thisWeekMonday.plusDays(7))
+                .list();
+
+        // 统计每天的健康测试数量
+        if (healthScores != null && !healthScores.isEmpty()) {
+            for (HealthScore record : healthScores) {
+                int dayIndex = record.getCreateTime().getDayOfWeek().getValue() - 1;
+                healthCounts.set(dayIndex, healthCounts.get(dayIndex) + 1);
+            }
+        }
+        // 设置各系列数据
+        addSportRecordData.setData(sportCounts);
+        addMealRecordData.setData(mealCounts);
+        healthTestData.setData(healthCounts);
+
+        vo.setSeries(List.of(addSportRecordData, addMealRecordData, healthTestData));
+        return vo;
+    }
 }

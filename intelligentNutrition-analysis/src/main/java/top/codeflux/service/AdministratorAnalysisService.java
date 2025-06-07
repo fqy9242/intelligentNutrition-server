@@ -50,4 +50,10 @@ public interface AdministratorAnalysisService {
      * @return
      */
     PieChartVo analysisNutritional();
+
+    /**
+     * 统计用户活动
+     * @return
+     */
+    BarChartVo analysisUserActivity();
 }

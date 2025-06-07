@@ -95,4 +95,14 @@ public class AdministratorAnalysisController extends BaseController {
         PieChartVo vo = analysisService.analysisNutritional();
         return success(vo);
     }
+
+    /**
+     * 统计用户活动 本周
+     * @return
+     */
+    @GetMapping("/analysisUserActivity")
+    public AjaxResult analysisUserActivity() {
+        BarChartVo vo = analysisService.analysisUserActivity();
+        return success(vo);
+    }
 }
