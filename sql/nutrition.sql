@@ -11,7 +11,7 @@
  Target Server Version : 90200 (9.2.0)
  File Encoding         : 65001
 
- Date: 07/06/2025 09:46:36
+ Date: 07/06/2025 10:34:35
 */
 
 SET NAMES utf8mb4;
@@ -60,7 +60,28 @@ CREATE TABLE `app_user`  (
 -- Records of app_user
 -- ----------------------------
 INSERT INTO `app_user` VALUES (1, '2331020130229', '覃惠通', '8347C73A13E73D841030A31D6E0DF86E', 'https://ts3.tc.mm.bing.net/th/id/OIP-C.g5M-iZUiocFCi9YAzojtRAAAAA', 190, 50, '2025-06-06 08:35:11', '2025-05-16 20:57:57', '2025-05-26 12:06:18');
-INSERT INTO `app_user` VALUES (2, '2333311220111', '李白', '4b2ce66d1b326edf19bdc20aabca8efd', '/profile/upload/2025/05/26/red_oil_20250526163950A001.jpg', 190, 50, NULL, '2025-05-26 16:43:30', '2025-05-26 16:43:30');
+INSERT INTO `app_user` VALUES (2, '2333311220111', '李白', '4b2ce66d1b326edf19bdc20aabca8efd', '/profile/upload/2025/05/26/red_oil_20250526163950A001.jpg', 180, 50, NULL, '2025-05-26 16:43:30', '2025-05-26 16:43:30');
+
+-- ----------------------------
+-- Table structure for bmi_change_log
+-- ----------------------------
+DROP TABLE IF EXISTS `bmi_change_log`;
+CREATE TABLE `bmi_change_log`  (
+  `id` int UNSIGNED NOT NULL AUTO_INCREMENT,
+  `student_number` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '学号',
+  `old_height` double NULL DEFAULT NULL COMMENT '原来的身高',
+  `old_weight` double NULL DEFAULT NULL COMMENT '原来的体重',
+  `new_height` double NULL DEFAULT NULL COMMENT '新的身高',
+  `new_weight` double NULL DEFAULT NULL COMMENT '新的体重',
+  `change_time` datetime NULL DEFAULT NULL COMMENT '更改时间',
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE INDEX `uni_change_time`(`change_time` ASC) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户BMI改变记录' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of bmi_change_log
+-- ----------------------------
+INSERT INTO `bmi_change_log` VALUES (1, '2333311220111', 190, 50, 180, 50, '2025-06-07 10:26:06');
 
 -- ----------------------------
 -- Table structure for dietary_record
@@ -104,7 +125,7 @@ CREATE TABLE `drinking_water_record`  (
   `capacity` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '喝水容量(毫升)',
   `drinking_time` datetime NULL DEFAULT NULL COMMENT '喝水时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户喝水记录表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of drinking_water_record
@@ -513,7 +534,7 @@ CREATE TABLE `sys_logininfor`  (
   PRIMARY KEY (`info_id`) USING BTREE,
   INDEX `idx_sys_logininfor_s`(`status` ASC) USING BTREE,
   INDEX `idx_sys_logininfor_lt`(`login_time` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 153 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '系统访问记录' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 154 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '系统访问记录' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of sys_logininfor
@@ -571,6 +592,7 @@ INSERT INTO `sys_logininfor` VALUES (149, 'admin', '127.0.0.1', '内网IP', 'Chr
 INSERT INTO `sys_logininfor` VALUES (150, 'admin', '127.0.0.1', '内网IP', 'Chrome 13', 'Windows 10', '0', '登录成功', '2025-06-06 22:13:33');
 INSERT INTO `sys_logininfor` VALUES (151, 'admin', '127.0.0.1', '内网IP', 'Chrome 13', 'Windows 10', '0', '登录成功', '2025-06-06 23:14:44');
 INSERT INTO `sys_logininfor` VALUES (152, 'admin', '127.0.0.1', '内网IP', 'Chrome 13', 'Windows 10', '0', '登录成功', '2025-06-07 09:00:08');
+INSERT INTO `sys_logininfor` VALUES (153, 'admin', '127.0.0.1', '内网IP', 'Chrome 13', 'Windows 10', '0', '登录成功', '2025-06-07 10:30:30');
 
 -- ----------------------------
 -- Table structure for sys_menu
@@ -999,7 +1021,7 @@ CREATE TABLE `sys_user`  (
 -- ----------------------------
 -- Records of sys_user
 -- ----------------------------
-INSERT INTO `sys_user` VALUES (1, 103, 'admin', '管理员', '00', '59605904@qq.com', '19999999999', '0', '', '$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2', '0', '0', '127.0.0.1', '2025-06-07 09:00:08', 'admin', '2025-05-15 15:11:20', '', '2025-06-07 09:00:08', '管理员');
+INSERT INTO `sys_user` VALUES (1, 103, 'admin', '管理员', '00', '59605904@qq.com', '19999999999', '0', '', '$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2', '0', '0', '127.0.0.1', '2025-06-07 10:30:31', 'admin', '2025-05-15 15:11:20', '', '2025-06-07 10:30:30', '管理员');
 INSERT INTO `sys_user` VALUES (2, 105, 'ry', '若依', '00', 'ry@qq.com', '15666666666', '1', '', '$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2', '0', '0', '127.0.0.1', '2025-05-15 15:11:20', 'admin', '2025-05-15 15:11:20', '', NULL, '测试员');
 
 -- ----------------------------
@@ -1033,5 +1055,62 @@ CREATE TABLE `sys_user_role`  (
 -- ----------------------------
 INSERT INTO `sys_user_role` VALUES (1, 1);
 INSERT INTO `sys_user_role` VALUES (2, 2);
+
+-- ----------------------------
+-- Triggers structure for table app_user
+-- ----------------------------
+DROP TRIGGER IF EXISTS `after_user_insert`;
+delimiter ;;
+CREATE TRIGGER `after_user_insert` AFTER INSERT ON `app_user` FOR EACH ROW BEGIN
+    -- 插入用户初始记录到日志表
+    INSERT INTO bmi_change_log (
+        student_number,
+        old_height,
+        old_weight,
+        new_height,
+        new_weight,
+        change_time
+    )
+    VALUES (
+        NEW.student_number, 
+        NULL,                -- 插入时没有旧值
+        NULL,
+        NEW.height,
+        NEW.weight,
+        NOW()
+    );
+END
+;;
+delimiter ;
+
+-- ----------------------------
+-- Triggers structure for table app_user
+-- ----------------------------
+DROP TRIGGER IF EXISTS `after_user_update`;
+delimiter ;;
+CREATE TRIGGER `after_user_update` AFTER UPDATE ON `app_user` FOR EACH ROW BEGIN
+    -- 检查height或weight是否发生变化
+    IF OLD.height != NEW.height OR OLD.weight != NEW.weight THEN
+        -- 插入变更记录到日志表
+        INSERT INTO bmi_change_log (
+            student_number,
+            old_height,
+            old_weight,
+            new_height,
+            new_weight,
+            change_time
+        )
+        VALUES (
+            OLD.student_number,
+            OLD.height,
+            OLD.weight,
+            NEW.height,
+            NEW.weight,
+            NOW()
+        );
+    END IF;
+END
+;;
+delimiter ;
 
 SET FOREIGN_KEY_CHECKS = 1;

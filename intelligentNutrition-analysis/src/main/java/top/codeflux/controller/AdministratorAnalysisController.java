@@ -105,4 +105,14 @@ public class AdministratorAnalysisController extends BaseController {
         BarChartVo vo = analysisService.analysisUserActivity();
         return success(vo);
     }
+
+    /**
+     * 用户bmi平均值趋势
+     * @return
+     */
+    @GetMapping("/bmiAdvTrend")
+    public AjaxResult bmiAdvTrend() {
+        ChartVo<Double> vo = analysisService.bmiAdvTrend();
+        return success(vo);
+    }
 }

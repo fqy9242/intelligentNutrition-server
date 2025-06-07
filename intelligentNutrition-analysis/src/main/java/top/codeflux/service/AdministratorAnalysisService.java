@@ -56,4 +56,10 @@ public interface AdministratorAnalysisService {
      * @return
      */
     BarChartVo analysisUserActivity();
+
+    /**
+     * 统计用户平均bmi趋势
+     * @return
+     */
+    ChartVo<Double> bmiAdvTrend();
 }

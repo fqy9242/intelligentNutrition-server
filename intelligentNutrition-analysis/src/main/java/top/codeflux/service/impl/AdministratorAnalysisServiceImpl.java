@@ -12,6 +12,7 @@ import top.codeflux.common.domain.AppUser;
 import top.codeflux.common.domain.DietaryRecord;
 import top.codeflux.common.domain.vo.chart.PieChartVo;
 import top.codeflux.domain.vo.*;
+import top.codeflux.mapper.AnalysisMapper;
 import top.codeflux.service.AdministratorAnalysisService;
 
 import java.text.DecimalFormat;
@@ -33,6 +34,7 @@ public class AdministratorAnalysisServiceImpl implements AdministratorAnalysisSe
     private final HealthCheckInService healthCheckInService;
     private final DietaryRecordService dietaryRecordService;
     private final AiService aiService;
+    private final AnalysisMapper analysisMapper;
     /**
      * 统计用户数量
      *
@@ -331,4 +333,65 @@ public class AdministratorAnalysisServiceImpl implements AdministratorAnalysisSe
         vo.setSeries(List.of(addSportRecordData, addMealRecordData, healthTestData));
         return vo;
     }
+
+    /**
+     * 统计用户平均bmi趋势
+     *
+     * @return
+     */
+    @Override
+    public ChartVo<Double> bmiAdvTrend() {
+        ChartVo<Double> vo = new ChartVo<>();
+
+        // 创建小数格式化工具
+        DecimalFormat df = new DecimalFormat("#.##");
+
+        // 设置x轴数据 - 近6个月
+        List<String> xAxis = new ArrayList<>();
+        List<Double> yAxis = new ArrayList<>();
+
+        // 获取当前月第一天
+        LocalDateTime firstDayOfMonth = LocalDateTime.now().withDayOfMonth(1);
+
+
+        // 收集近6个月的数据
+        for (int i = 5; i >= 0; i--) {
+            // 计算当前迭代月份的起始时间
+            LocalDateTime startTime = firstDayOfMonth.minusMonths(i);
+            // 计算当前迭代月份的结束时间（设为该月最后一天）
+            LocalDateTime endTime;
+            if (i > 0) {
+                endTime = firstDayOfMonth.minusMonths(i - 1).minusDays(1).withHour(23).withMinute(59).withSecond(59);
+            } else {
+                endTime = LocalDateTime.now();
+            }
+
+            // 转换为Date类型
+            Date startDate = java.sql.Timestamp.valueOf(startTime);
+            Date endDate = java.sql.Timestamp.valueOf(endTime);
+
+            // 调用Mapper获取平均BMI
+            Double avgBmi = analysisMapper.getLatestAverageBmiByTimeRange(startDate, endDate);
+
+            // 如果没有数据，设置为0，否则格式化为两位小数
+            if (avgBmi == null) {
+                avgBmi = 0.0;
+            } else {
+                avgBmi = Double.parseDouble(df.format(avgBmi));
+            }
+
+            // 格式化月份（添加年份以区分）
+            String monthLabel = startTime.getMonthValue() + "月";
+
+            // 添加到图表数据
+            xAxis.add(monthLabel);
+            yAxis.add(avgBmi);
+        }
+        // 设置图表数据
+        vo.setXAxis(xAxis);
+        vo.setYAxis(yAxis);
+
+        return vo;
+    }
 }
+
