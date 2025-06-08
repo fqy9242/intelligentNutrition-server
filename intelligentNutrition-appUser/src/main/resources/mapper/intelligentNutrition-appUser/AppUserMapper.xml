@@ -89,7 +89,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <update id="updateAppUser" parameterType="AppUser">
         update app_user
         <trim prefix="SET" suffixOverrides=",">
-            <if test="studentNumber != null and studentNumber != ''">student_number = #{studentNumber},</if>
+<!--            <if test="studentNumber != null and studentNumber != ''">student_number = #{studentNumber},</if>-->
             <if test="name != null and name != ''">name = #{name},</if>
             <if test="password != null">password = #{password},</if>
             <if test="avatar != null and avatar != ''">avatar = #{avatar},</if>
@@ -99,7 +99,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="createTime != null">create_time = #{createTime},</if>
             <if test="updateTime != null">update_time = #{updateTime},</if>
         </trim>
-        where id = #{id}
+        <choose>
+            <when test="id != null and id != ''">
+                where id = #{id}
+            </when>
+            <otherwise>
+                where student_number = #{studentNumber}
+            </otherwise>
+        </choose>
     </update>
 
     <delete id="deleteAppUserById" parameterType="String">
