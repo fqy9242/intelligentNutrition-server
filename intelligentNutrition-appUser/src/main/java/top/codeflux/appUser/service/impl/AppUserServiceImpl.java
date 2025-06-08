@@ -318,7 +318,6 @@ public class AppUserServiceImpl extends ServiceImpl<AppUserMapper, AppUser> impl
      * @return
      */
     @Override
-    @Cacheable(value = "todayRecommendCalories", key = "#studentNumber + '_' + T(java.time.LocalDate).now().toString()")
     public TodayRecommendCalorieVo todayRecommendCalories(String studentNumber) {
         // 根据学号查询用户信息
         AppUser user = lambdaQuery().eq(AppUser::getStudentNumber, studentNumber).one();

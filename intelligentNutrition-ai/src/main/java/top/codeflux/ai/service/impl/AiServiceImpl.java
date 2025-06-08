@@ -8,6 +8,7 @@ import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.messages.UserMessage;
 import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.ai.model.Media;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
@@ -178,6 +179,7 @@ public class AiServiceImpl implements AiService {
      * @return 今日推荐的卡路里摄入量
      */
     @Override
+    @Cacheable(value = "todayRecommendCalories", key = "#studentNumber + '_' + T(java.time.LocalDate).now().toString()")
     public double getTodayRecommendCalories(String userInfo, String dietaryRecordInfo, String sportRecordInfo) {
         // 构建提示词
         String prompt = String.format(
