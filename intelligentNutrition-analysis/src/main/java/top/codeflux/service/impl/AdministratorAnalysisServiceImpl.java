@@ -194,30 +194,33 @@ public class AdministratorAnalysisServiceImpl implements AdministratorAnalysisSe
      */
     @Override
     public ChartVo<Long> getUserTrend() {
-        // 创建一个图表vo对象
         ChartVo<Long> vo = new ChartVo<>();
-        // 获取x轴数据 -> 近六个月
         List<String> xAxis = new ArrayList<>();
-        LocalDateTime firstDayOfMonth = LocalDateTime.now().withDayOfMonth(1);
-//        xAxis.add(firstDayOfMonth.getMonthValue() + "月");
-        // yAix -> 用户增长
-        List<Long> yAis = new ArrayList<>();
-        for (int i = 0; i < 6; i++) {
-            LocalDateTime startTime = firstDayOfMonth.minusMonths(i);
-            LocalDateTime endTime = i > 0? firstDayOfMonth.minusMonths(i - 1) : firstDayOfMonth.minusMonths(1);
-            xAxis.add(startTime.getMonthValue() + "月");
-            // 查询新用户
+        List<Long> yAxis = new ArrayList<>();
+        // 获取当前月第一天
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime currentMonthStart = now.withDayOfMonth(1).withHour(0).withMinute(0).withSecond(0);
+        // 收集近6个月数据
+        for (int i = 5; i >= 0; i--) {
+            // 计算月份区间
+            LocalDateTime monthStart = currentMonthStart.minusMonths(i);
+            LocalDateTime monthEnd = i > 0 ?
+                    currentMonthStart.minusMonths(i-1) :
+                    now;
+
+            // 添加带年份的月份标签
+            xAxis.add(monthStart.getMonthValue() + "月");
+
+            // 查询用户增长
             Long countNewUser = userService.lambdaQuery()
-                    .lt(AppUser::getCreateTime, endTime)
-                    .gt(AppUser::getCreateTime, startTime)
+                    .ge(AppUser::getCreateTime, monthStart)
+                    .lt(AppUser::getCreateTime, monthEnd)
                     .count();
-            yAis.add(countNewUser);
+            yAxis.add(countNewUser);
         }
 
-        Collections.reverse(xAxis);
-        Collections.reverse(yAis);
         vo.setXAxis(xAxis);
-        vo.setYAxis(yAis);
+        vo.setYAxis(yAxis);
         return vo;
     }
 
